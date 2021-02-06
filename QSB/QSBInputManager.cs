@@ -14,7 +14,6 @@ namespace QSB
 		public static event InputEvent ExitTaunt;
 
 		// TODO : finish instruments - disabled for 0.7.0 release
-		/*
 		public void Update()
 		{
 			if (Input.GetKey(KeyCode.T))
@@ -28,7 +27,7 @@ namespace QSB
 				{
 					EskerTaunt?.Invoke();
 				}
-				else if (Input.GetKeyDown(KeyCode.Alpha5))
+				else if (Input.GetKeyDown(KeyCode.Alpha3))
 				{
 					RiebeckTaunt?.Invoke();
 				}
@@ -36,7 +35,7 @@ namespace QSB
 				{
 					GabbroTaunt?.Invoke();
 				}
-				else if (Input.GetKeyDown(KeyCode.Alpha3))
+				else if (Input.GetKeyDown(KeyCode.Alpha5))
 				{
 					FeldsparTaunt?.Invoke();
 				}
@@ -48,6 +47,5 @@ namespace QSB
 				ExitTaunt?.Invoke();
 			}
 		}
-		*/
 	}
 }

@@ -225,6 +225,10 @@ namespace QSB.Animation
 					controller = _riebeckController;
 					break;
 			}
+			if (controller == null)
+			{
+				DebugLog.DebugWrite($"Error - controller for animtype {type} is null.", MessageType.Error);
+			}
 			_anim.runtimeAnimatorController = controller;
 			_bodyAnim.runtimeAnimatorController = controller;
 			if (type != AnimationType.PlayerSuited && type != AnimationType.PlayerUnsuited)

@@ -12,7 +12,15 @@ namespace QSB.Instruments
 	{
 		private Transform _rootObj;
 		private AnimationType _savedType;
+
 		private GameObject _chertDrum;
+		private GameObject _chertStick;
+		private GameObject _chertBase;
+		private GameObject _eskerChair;
+		private GameObject _riebeckBanjo;
+		private GameObject _riebeckBase;
+		private GameObject _gabbroOboe;
+		private GameObject _feldsparHarmonica;
 
 		public void InitLocal(Transform root)
 		{
@@ -66,6 +74,7 @@ namespace QSB.Instruments
 		{
 			var drum = new GameObject();
 			var mf = drum.AddComponent<MeshFilter>();
+			// TODO : maybe just find this from the scene, just like the material?
 			mf.sharedMesh = bundle.LoadAsset("assets/Chert/hourglasstwinsmeshescharacters2.asset") as Mesh;
 			var mr = drum.AddComponent<MeshRenderer>();
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
