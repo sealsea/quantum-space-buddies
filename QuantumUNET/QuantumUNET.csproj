@@ -124,8 +124,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>md "$(OwmlDir)\Mods\QSB"
+    <PostBuildEvent>md "$(OwmlDir)\Mods\$(UniqueName)"
 
-copy /y "$(TargetPath)" "$(OwmlDir)\Mods\QSB"</PostBuildEvent>
+copy /y "$(TargetPath)" "$(OwmlDir)\Mods\$(UniqueName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
