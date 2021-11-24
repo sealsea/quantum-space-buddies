@@ -92,7 +92,7 @@ namespace QSB.Player.TransformSync
 			var player = Locator.GetPlayerTransform();
 			var playerModel = player.Find("Traveller_HEA_Player_v2");
 			GetComponent<AnimationSync>().InitLocal(playerModel);
-			GetComponent<InstrumentsManager>().InitLocal(player);
+			GetComponent<InstrumentsManager>().InitLocal(playerModel);
 			Player.Body = player.gameObject;
 
 			// camera
@@ -152,7 +152,7 @@ namespace QSB.Player.TransformSync
 			Player.Body = REMOTE_Player_Body;
 
 			GetComponent<AnimationSync>().InitRemote(REMOTE_Traveller_HEA_Player_v2);
-			GetComponent<InstrumentsManager>().InitRemote(REMOTE_Player_Body.transform);
+			GetComponent<InstrumentsManager>().InitRemote(REMOTE_Traveller_HEA_Player_v2);
 
 			var marker = REMOTE_Player_Body.AddComponent<PlayerHUDMarker>();
 			marker.Init(Player);

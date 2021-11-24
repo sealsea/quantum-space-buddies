@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using QSB.Animation.Player;
 using QSB.Events;
+using QSB.Inputs;
 using QSB.Instruments.QSBCamera;
 using QSB.Player;
 using QSB.Utility;
@@ -19,12 +20,12 @@ namespace QSB.Instruments
 			_rootObj = root;
 			gameObject.AddComponent<CameraManager>();
 
-			//QSBInputManager.ChertTaunt += OnChertTaunt;
-			//QSBInputManager.EskerTaunt += OnEskerTaunt;
-			//QSBInputManager.FeldsparTaunt += OnFeldsparTaunt;
-			//QSBInputManager.GabbroTaunt += OnGabbroTaunt;
-			//QSBInputManager.RiebeckTaunt += OnRiebeckTaunt;
-			//QSBInputManager.ExitTaunt += ReturnToPlayer;
+			QSBInputManager.ChertTaunt += OnChertTaunt;
+			QSBInputManager.EskerTaunt += OnEskerTaunt;
+			QSBInputManager.FeldsparTaunt += OnFeldsparTaunt;
+			QSBInputManager.GabbroTaunt += OnGabbroTaunt;
+			QSBInputManager.RiebeckTaunt += OnRiebeckTaunt;
+			QSBInputManager.ExitTaunt += ReturnToPlayer;
 
 			QSBCore.UnityEvents.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
 		}
@@ -42,12 +43,13 @@ namespace QSB.Instruments
 			{
 				return;
 			}
-			//QSBInputManager.ChertTaunt -= OnChertTaunt;
-			//QSBInputManager.EskerTaunt -= OnEskerTaunt;
-			//QSBInputManager.FeldsparTaunt -= OnFeldsparTaunt;
-			//QSBInputManager.GabbroTaunt -= OnGabbroTaunt;
-			//QSBInputManager.RiebeckTaunt -= OnRiebeckTaunt;
-			//QSBInputManager.ExitTaunt -= ReturnToPlayer;
+
+			QSBInputManager.ChertTaunt -= OnChertTaunt;
+			QSBInputManager.EskerTaunt -= OnEskerTaunt;
+			QSBInputManager.FeldsparTaunt -= OnFeldsparTaunt;
+			QSBInputManager.GabbroTaunt -= OnGabbroTaunt;
+			QSBInputManager.RiebeckTaunt -= OnRiebeckTaunt;
+			QSBInputManager.ExitTaunt -= ReturnToPlayer;
 		}
 
 		private void OnChertTaunt() => StartInstrument(AnimationType.Chert);
@@ -66,11 +68,11 @@ namespace QSB.Instruments
 		{
 			var drum = new GameObject();
 			var mf = drum.AddComponent<MeshFilter>();
-			mf.sharedMesh = bundle.LoadAsset("assets/Chert/hourglasstwinsmeshescharacters2.asset") as Mesh;
+			mf.sharedMesh = bundle.LoadAsset("Assets/GameAssets/Mesh/NewDrum_polySurface2.asset") as Mesh;
 			var mr = drum.AddComponent<MeshRenderer>();
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 			{
-				mr.sharedMaterial = GameObject.Find("NewDrum:polySurface2").GetComponent<MeshRenderer>().material;
+				mr.sharedMaterial = GameObject.Find("NewDrum:polySurface2").GetComponent<MeshRenderer>().sharedMaterial;
 			}
 			else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
 			{

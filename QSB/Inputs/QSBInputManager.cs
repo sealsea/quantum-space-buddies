@@ -1,12 +1,13 @@
 ﻿using QSB.Utility;
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace QSB.Inputs
 {
 	public class QSBInputManager : MonoBehaviour
 	{
 		// TODO : finish instruments - disabled for 0.7.0 release
-		/*
 		public static event Action ChertTaunt;
 		public static event Action EskerTaunt;
 		public static event Action RiebeckTaunt;
@@ -16,38 +17,37 @@ namespace QSB.Inputs
 
 		public void Update()
 		{
-			if (Input.GetKey(KeyCode.T))
+			if (Keyboard.current[Key.T].isPressed)
 			{
 				// Listed order is from sun to dark bramble
-				if (Input.GetKeyDown(KeyCode.Alpha1))
+				if (Keyboard.current[Key.Digit1].wasPressedThisFrame)
 				{
 					ChertTaunt?.Invoke();
 				}
-				else if (Input.GetKeyDown(KeyCode.Alpha2))
+				else if (Keyboard.current[Key.Digit2].wasPressedThisFrame)
 				{
 					EskerTaunt?.Invoke();
 				}
-				else if (Input.GetKeyDown(KeyCode.Alpha5))
+				else if (Keyboard.current[Key.Digit3].wasPressedThisFrame)
 				{
 					RiebeckTaunt?.Invoke();
 				}
-				else if (Input.GetKeyDown(KeyCode.Alpha4))
+				else if (Keyboard.current[Key.Digit4].wasPressedThisFrame)
 				{
 					GabbroTaunt?.Invoke();
 				}
-				else if (Input.GetKeyDown(KeyCode.Alpha3))
+				else if (Keyboard.current[Key.Digit5].wasPressedThisFrame)
 				{
 					FeldsparTaunt?.Invoke();
 				}
 			}
 
-			if (OWInput.GetValue(InputLibrary.moveXZ, InputMode.None) != Vector2.zero
+			if (OWInput.GetAxisValue(InputLibrary.moveXZ, InputMode.None) != Vector2.zero
 				|| OWInput.GetValue(InputLibrary.jump, InputMode.None) != 0f)
 			{
 				ExitTaunt?.Invoke();
 			}
 		}
-		*/
 
 		public static QSBInputManager Instance { get; private set; }
 

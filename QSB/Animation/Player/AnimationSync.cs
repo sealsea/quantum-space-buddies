@@ -20,9 +20,9 @@ namespace QSB.Animation.Player
 		private CrouchSync _crouchSync;
 
 		private RuntimeAnimatorController _chertController;
-		//private readonly RuntimeAnimatorController _eskerController;
-		//private readonly RuntimeAnimatorController _feldsparController;
-		//private readonly RuntimeAnimatorController _gabbroController;
+		private readonly RuntimeAnimatorController _eskerController;
+		private readonly RuntimeAnimatorController _feldsparController;
+		private readonly RuntimeAnimatorController _gabbroController;
 		private RuntimeAnimatorController _riebeckController;
 
 		public AnimatorMirror Mirror { get; private set; }
@@ -54,8 +54,8 @@ namespace QSB.Animation.Player
 		private void LoadControllers()
 		{
 			var bundle = QSBCore.InstrumentAssetBundle;
-			_chertController = bundle.LoadAsset("assets/Chert/Traveller_Chert.controller") as RuntimeAnimatorController;
-			_riebeckController = bundle.LoadAsset("assets/Riebeck/Traveller_Riebeck.controller") as RuntimeAnimatorController;
+			_chertController = bundle.LoadAsset("Assets/GameAssets/AnimatorController/Traveller_Chert.controller") as RuntimeAnimatorController;
+			_riebeckController = bundle.LoadAsset("Assets/GameAssets/AnimatorController/Traveller_Riebeck.controller") as RuntimeAnimatorController;
 		}
 
 		private void InitCommon(Transform body)
@@ -207,15 +207,15 @@ namespace QSB.Animation.Player
 					break;
 
 				case AnimationType.Esker:
-					//controller = _eskerController;
+					controller = _eskerController;
 					break;
 
 				case AnimationType.Feldspar:
-					//controller = _feldsparController;
+					controller = _feldsparController;
 					break;
 
 				case AnimationType.Gabbro:
-					//controller = _gabbroController;
+					controller = _gabbroController;
 					break;
 
 				case AnimationType.Riebeck:
