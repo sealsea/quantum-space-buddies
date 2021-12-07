@@ -365,3 +365,5 @@ IgnoreInGithub/
 OWML.Config.json
 WeavedFiles/QSB.dll
 WeavedFiles/QSB.dll.mdb
+DevEnv.targets
+qsb-unityproject/
