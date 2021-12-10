@@ -83,7 +83,14 @@ namespace QSB.Utility
 			column3Offset = 10f;
 			column4Offset = 10f;
 
-			#region Column1 - Server data
+			Column1GUI();
+			Column2GUI();
+			Column3GUI();
+			Column4GUI();
+		}
+
+		private void Column1GUI()
+		{
 			WriteLine(1, $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
 			WriteLine(1, $"HasWokenUp : {WorldObjectManager.AllObjectsReady}");
 			if (WakeUpSync.LocalInstance != null)
@@ -116,9 +123,10 @@ namespace QSB.Utility
 					WriteLine(1, $"TimeLoop IsTimeLoopEnabled : {TimeLoop.IsTimeLoopEnabled()}");
 				}
 			}
-			#endregion
+		}
 
-			#region Column2 - Player data
+		private void Column2GUI()
+		{
 			WriteLine(2, $"OrbList count : {NomaiOrbTransformSync.OrbTransformSyncs.Count}");
 			WriteLine(2, $"Player data :");
 			foreach (var player in QSBPlayerManager.PlayerList)
@@ -148,9 +156,14 @@ namespace QSB.Utility
 					WriteLine(2, $" - Parent : {(parent == null ? "NULL" : parent.name)}", parent == null ? Color.red : Color.white);
 				}
 			}
-			#endregion
+		}
 
-			#region Column3 - Ship data
+		private void Column3GUI()
+		{
+			if (!WorldObjectManager.AllObjectsReady)
+			{
+				return;
+			}
 
 			WriteLine(3, $"Current Flyer : {ShipManager.Instance.CurrentFlyer}");
 			if (ShipTransformSync.LocalInstance != null)
@@ -172,7 +185,8 @@ namespace QSB.Utility
 			}
 
 			WriteLine(3, $"QSBShipComponent");
-			foreach (var component in QSBWorldSync.GetWorldObjects<QSBShipComponent>())
+			var components = QSBWorldSync.GetWorldObjects<QSBShipComponent>();
+			foreach (var component in components)
 			{
 				var attachedObject = component.AttachedObject;
 				if (attachedObject == null)
@@ -186,7 +200,8 @@ namespace QSB.Utility
 			}
 
 			WriteLine(3, $"QSBShipHull");
-			foreach (var hull in QSBWorldSync.GetWorldObjects<QSBShipHull>())
+			var hulls = QSBWorldSync.GetWorldObjects<QSBShipHull>();
+			foreach (var hull in hulls)
 			{
 				var attachedObject = hull.AttachedObject;
 				if (attachedObject == null)
@@ -198,9 +213,15 @@ namespace QSB.Utility
 					WriteLine(3, $"- {hull.AttachedObject.name}, Integrity:{hull.AttachedObject.integrity}");
 				}
 			}
-			#endregion
+		}
 
-			#region Column4 - Quantum Object Possesion
+		private void Column4GUI()
+		{
+			if (!WorldObjectManager.AllObjectsReady)
+			{
+				return;
+			}
+
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{
 				if (player == null)
@@ -247,7 +268,6 @@ namespace QSB.Utility
 					}
 				}
 			}
-			#endregion
 		}
 	}
 }

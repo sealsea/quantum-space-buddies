@@ -26,6 +26,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public override void Init(T attachedObject, int id)
 		{
+			/*
 			var debugBundle = QSBCore.DebugAssetBundle;
 			var sphere = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Sphere.prefab");
 			var cube = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Cube.prefab");
@@ -80,8 +81,11 @@ namespace QSB.QuantumSync.WorldObjects
 						newCapsule.transform.localScale = new Vector3(capsuleShape.radius * 2, capsuleShape.height, capsuleShape.radius * 2);
 					}
 				}
+
 			}
 
+			*/
+			
 			QSBCore.UnityEvents.FireInNUpdates(LateInit, 5);
 		}
 

@@ -3,6 +3,7 @@ using QSB.Player;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace QSB.WorldSync
@@ -63,14 +64,14 @@ namespace QSB.WorldSync
 
 			if (QSBPlayerManager.LocalPlayer.IsReady)
 			{
-				DoRebuild(scene);
+				DoRebuildAsync(scene);
 				return;
 			}
 
-			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayer.IsReady, () => DoRebuild(scene));
+			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayer.IsReady, () => DoRebuildAsync(scene));
 		}
 
-		private static void DoRebuild(OWScene scene)
+		private static async void DoRebuildAsync(OWScene scene)
 		{
 			_numManagersReadying = 0;
 			_numObjectsReadying = 0;
@@ -81,7 +82,7 @@ namespace QSB.WorldSync
 				try
 				{
 					DebugLog.DebugWrite($"Rebuilding {manager.GetType().Name}", MessageType.Info);
-					manager.RebuildWorldObjects(scene);
+					await Task.Run(() => manager.RebuildWorldObjects(scene));
 				}
 				catch (Exception ex)
 				{
@@ -107,9 +108,19 @@ namespace QSB.WorldSync
 		internal static uint _numObjectsReadying;
 
 		/// indicates that this won't become ready immediately
-		protected void StartDelayedReady() => _numManagersReadying++;
+		protected void StartDelayedReady()
+		{
+			//DebugLog.DebugWrite($"{GetType().Name} StartDelayedReady");
+			_numManagersReadying++;
+		}
+		
 
 		/// indicates that this is now ready
-		protected void FinishDelayedReady() => _numManagersReadying--;
+		protected void FinishDelayedReady()
+		{
+			//DebugLog.DebugWrite($"{GetType().Name} FinishDelayedReady");
+			_numManagersReadying--;
+		}
+		
 	}
 }

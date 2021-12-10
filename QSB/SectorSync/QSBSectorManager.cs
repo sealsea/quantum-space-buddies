@@ -71,7 +71,7 @@ namespace QSB.SectorSync
 			}
 
 			QSBWorldSync.Init<QSBSector, Sector>();
-			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
+			IsReady = QSBSceneManager.IsInUniverse;
 		}
 
 		private void CheckTransformSyncSector(BaseSectoredSync transformSync)

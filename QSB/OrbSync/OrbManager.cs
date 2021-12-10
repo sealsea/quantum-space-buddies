@@ -6,6 +6,7 @@ using QSB.WorldSync;
 using QuantumUNET;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace QSB.OrbSync
@@ -17,7 +18,6 @@ namespace QSB.OrbSync
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			QSBWorldSync.Init<QSBOrbSlot, NomaiInterfaceSlot>();
-			DebugLog.DebugWrite($"Finished slot build with {QSBWorldSync.GetWorldObjects<QSBOrbSlot>().Count()} slots.", MessageType.Success);
 			BuildOrbs();
 		}
 

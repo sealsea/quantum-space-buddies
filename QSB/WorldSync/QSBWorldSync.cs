@@ -5,6 +5,7 @@ using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace QSB.WorldSync
@@ -139,19 +140,25 @@ namespace QSB.WorldSync
 			=> Resources.FindObjectsOfTypeAll<TUnityObject>()
 				.Where(x => x.gameObject.scene.name != null);
 
-		public static void Init<TWorldObject, TUnityObject>()
+		public static async void Init<TWorldObject, TUnityObject>()
+			where TWorldObject : WorldObject<TUnityObject>
+			where TUnityObject : MonoBehaviour
+			=> await Task.Run(() => InitAsync<TWorldObject, TUnityObject>());
+
+		private static void InitAsync<TWorldObject, TUnityObject>()
 			where TWorldObject : WorldObject<TUnityObject>
 			where TUnityObject : MonoBehaviour
 		{
 			RemoveWorldObjects<TWorldObject>();
 			var list = GetUnityObjects<TUnityObject>().ToList();
-			//DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {list.Count} instances.", MessageType.Info);
 			for (var id = 0; id < list.Count; id++)
 			{
 				var obj = CreateWorldObject<TWorldObject>();
 				obj.Init(list[id], id);
 				WorldObjectsToUnityObjects.Add(list[id], obj);
 			}
+
+			DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {list.Count} instances.", MessageType.Info);
 		}
 
 		private static TWorldObject CreateWorldObject<TWorldObject>()
