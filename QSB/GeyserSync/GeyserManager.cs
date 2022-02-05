@@ -9,7 +9,7 @@ namespace QSB.GeyserSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+		public override async UniTask BuildWorldObjects(QSBScene scene, CancellationToken ct)
 			=> QSBWorldSync.Init<QSBGeyser, GeyserController>();
 	}
 }

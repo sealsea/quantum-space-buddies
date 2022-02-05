@@ -17,9 +17,9 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
 
-		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
+		private void OnSceneLoaded(QSBScene oldScene, QSBScene newScene, bool inUniverse)
 		{
-			if (newScene != OWScene.EyeOfTheUniverse)
+			if (newScene != QSBScene.EyeOfTheUniverse)
 			{
 				return;
 			}

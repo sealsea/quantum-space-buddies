@@ -70,10 +70,10 @@ namespace QSB.SectorSync
 			DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
 		}
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+		public override async UniTask BuildWorldObjects(QSBScene scene, CancellationToken ct)
 		{
 			DebugLog.DebugWrite("Building sectors...", MessageType.Info);
-			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+			if (QSBSceneManager.CurrentScene == QSBScene.SolarSystem)
 			{
 				var timeLoopRing = GameObject.Find("TimeLoopRing_Body");
 				if (timeLoopRing != null)

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace QSB.Utility
@@ -146,6 +147,33 @@ namespace QSB.Utility
 			catch (Exception e)
 			{
 				DebugLog.ToConsole($"{self} - error {description} : {e}", MessageType.Error);
+			}
+		}
+
+		#endregion
+
+		#region CUSTOM
+
+		public static QSBScene ToQSBScene(this Scene scene)
+		{
+			switch (scene.name)
+			{
+				case "TitleScreen":
+					return QSBScene.TitleScreen;
+				case "SolarSystem":
+					return QSBScene.SolarSystem;
+				case "EyeOfTheUniverse":
+					return QSBScene.EyeOfTheUniverse;
+				case "Credits_Fast":
+					return QSBScene.Credits_Fast;
+				case "Credits_Final":
+					return QSBScene.Credits_Final;
+				case "PostCreditsScene":
+					return QSBScene.PostCreditsScene;
+				case "DebugScene":
+					return QSBScene.DebugScene;
+				default:
+					return QSBScene.Undefined;
 			}
 		}
 

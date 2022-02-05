@@ -9,7 +9,7 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.Eye;
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+		public override async UniTask BuildWorldObjects(QSBScene scene, CancellationToken ct)
 			=> QSBWorldSync.Init<QSBQuantumInstrument, QuantumInstrument>();
 	}
 }

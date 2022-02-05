@@ -20,7 +20,7 @@ namespace QSB.StatueSync
 		private void OnDestroy()
 			=> QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
 
-		private void OnUniverseSceneLoaded(OWScene oldScene, OWScene newScene)
+		private void OnUniverseSceneLoaded(QSBScene oldScene, QSBScene newScene)
 		{
 			if (!QSBCore.IsInMultiplayer)
 			{

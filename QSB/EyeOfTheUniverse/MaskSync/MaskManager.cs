@@ -18,7 +18,7 @@ namespace QSB.EyeOfTheUniverse.MaskSync
 
 		private void Awake() => QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
-		private static void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
+		private static void OnSceneLoaded(QSBScene oldScene, QSBScene newScene, bool inUniverse)
 		{
 			_flickering = false;
 			_flickerOutTime = 0f;

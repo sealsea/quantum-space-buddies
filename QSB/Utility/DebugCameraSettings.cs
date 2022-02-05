@@ -33,7 +33,7 @@ namespace QSB.Utility
 			Destroy(this);
 		}
 
-		private static void OnSceneLoaded(OWScene arg1, OWScene arg2, bool arg3)
+		private static void OnSceneLoaded(QSBScene arg1, QSBScene arg2, bool arg3)
 			=> Camera.main.backgroundColor = Color.gray;
 	}
 }

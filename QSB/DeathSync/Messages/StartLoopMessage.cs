@@ -13,11 +13,11 @@ namespace QSB.DeathSync.Messages
 		public override void OnReceiveRemote()
 		{
 			DebugLog.DebugWrite($" ~~~ LOOP START ~~~");
-			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+			if (QSBSceneManager.CurrentScene == QSBScene.SolarSystem)
 			{
 				new ClientStateMessage(ClientState.AliveInSolarSystem).Send();
 			}
-			else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
+			else if (QSBSceneManager.CurrentScene == QSBScene.EyeOfTheUniverse)
 			{
 				new ClientStateMessage(ClientState.AliveInEye).Send();
 			}

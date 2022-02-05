@@ -41,16 +41,16 @@ namespace QSB.SatelliteSync
 
 		public void OnConnected()
 		{
-			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+			if (QSBSceneManager.CurrentScene == QSBScene.SolarSystem)
 			{
 				Projector._snapshotTexture = SatelliteCameraSnapshot;
 				Projector._satelliteCamera.targetTexture = Projector._snapshotTexture;
 			}
 		}
 
-		private void OnSceneLoaded(OWScene oldScene, OWScene newScene)
+		private void OnSceneLoaded(QSBScene oldScene, QSBScene newScene)
 		{
-			if (newScene == OWScene.SolarSystem)
+			if (newScene == QSBScene.SolarSystem)
 			{
 				Projector = QSBWorldSync.GetUnityObjects<SatelliteSnapshotController>().First();
 				Projector._loopingSource.spatialBlend = 1f;

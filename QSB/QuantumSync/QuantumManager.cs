@@ -22,7 +22,7 @@ namespace QSB.QuantumSync
 
 		public void Awake() => QSBPlayerManager.OnRemovePlayer += PlayerLeave;
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+		public override async UniTask BuildWorldObjects(QSBScene scene, CancellationToken ct)
 		{
 			DebugLog.DebugWrite("Building quantum objects...", MessageType.Info);
 			QSBWorldSync.Init<QSBQuantumState, QuantumState>();
@@ -33,7 +33,7 @@ namespace QSB.QuantumSync
 			QSBWorldSync.Init<QSBQuantumMoon, QuantumMoon>();
 			QSBWorldSync.Init<QSBEyeProxyQuantumMoon, EyeProxyQuantumMoon>();
 			QSBWorldSync.Init<QSBQuantumSkeletonTower, QuantumSkeletonTower>();
-			if (scene == OWScene.SolarSystem)
+			if (scene == QSBScene.SolarSystem)
 			{
 				Shrine = QSBWorldSync.GetUnityObjects<QuantumShrine>().First();
 			}

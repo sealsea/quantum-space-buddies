@@ -72,7 +72,7 @@ namespace QSB.SaveSync.Messages
 
 		public override void OnReceiveRemote()
 		{
-			if (QSBSceneManager.CurrentScene != OWScene.TitleScreen)
+			if (QSBSceneManager.CurrentScene != QSBScene.TitleScreen)
 			{
 				DebugLog.ToConsole($"Error - Tried to handle GameStateEvent when not in TitleScreen!", MessageType.Error);
 				return;

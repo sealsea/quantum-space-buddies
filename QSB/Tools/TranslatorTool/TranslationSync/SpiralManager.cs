@@ -9,7 +9,7 @@ namespace QSB.Tools.TranslatorTool.TranslationSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+		public override async UniTask BuildWorldObjects(QSBScene scene, CancellationToken ct)
 		{
 			// wait for all late initializers (which includes nomai text) to finish
 			await UniTask.WaitUntil(() => LateInitializerManager.isDoneInitializing, cancellationToken: ct);

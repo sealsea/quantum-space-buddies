@@ -57,9 +57,9 @@ namespace QSB.Menus
 			QSBNetworkManager.singleton.OnClientDisconnected += OnDisconnected;
 		}
 
-		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isUniverse)
+		private void OnSceneLoaded(QSBScene oldScene, QSBScene newScene, bool isUniverse)
 		{
-			if (newScene == OWScene.EyeOfTheUniverse)
+			if (newScene == QSBScene.EyeOfTheUniverse)
 			{
 				GlobalMessenger<EyeState>.AddListener(OWEvents.EyeStateChanged, OnEyeStateChanged);
 			}
@@ -74,7 +74,7 @@ namespace QSB.Menus
 				return;
 			}
 
-			if (newScene == OWScene.TitleScreen)
+			if (newScene == QSBScene.TitleScreen)
 			{
 				MakeTitleMenus();
 			}
@@ -352,7 +352,7 @@ namespace QSB.Menus
 				address = QSBCore.DefaultServerIP;
 			}
 
-			if (QSBSceneManager.CurrentScene == OWScene.TitleScreen)
+			if (QSBSceneManager.CurrentScene == QSBScene.TitleScreen)
 			{
 				SetButtonActive(ResumeGameButton, false);
 				SetButtonActive(NewGameButton, false);

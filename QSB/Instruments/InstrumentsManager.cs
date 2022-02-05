@@ -68,11 +68,11 @@ namespace QSB.Instruments
 			var mf = drum.AddComponent<MeshFilter>();
 			mf.sharedMesh = bundle.LoadAsset("assets/Chert/hourglasstwinsmeshescharacters2.asset") as Mesh;
 			var mr = drum.AddComponent<MeshRenderer>();
-			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+			if (QSBSceneManager.CurrentScene == QSBScene.SolarSystem)
 			{
 				mr.sharedMaterial = GameObject.Find("NewDrum:polySurface2").GetComponent<MeshRenderer>().material;
 			}
-			else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
+			else if (QSBSceneManager.CurrentScene == QSBScene.EyeOfTheUniverse)
 			{
 				//mr.sharedMaterial = GameObject.Find("Props_HEA_Drums").GetComponent<MeshRenderer>().material;
 				// TODO : fix for instrument release

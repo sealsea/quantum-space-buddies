@@ -13,7 +13,7 @@ namespace QSB.Syncs.Occasional
 
 		public static readonly List<(OWRigidbody Body, OWRigidbody RefBody)> Bodies = new();
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+		public override async UniTask BuildWorldObjects(QSBScene scene, CancellationToken ct)
 		{
 			var gdBody = Locator._giantsDeep.GetOWRigidbody();
 			var cannon = Locator._orbitalProbeCannon.GetRequiredComponent<OrbitalProbeLaunchController>();

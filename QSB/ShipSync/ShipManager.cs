@@ -46,7 +46,7 @@ namespace QSB.ShipSync
 		public void Start()
 			=> Instance = this;
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+		public override async UniTask BuildWorldObjects(QSBScene scene, CancellationToken ct)
 		{
 			var shipBody = Locator.GetShipBody();
 			if (shipBody == null)

@@ -93,12 +93,12 @@ namespace QSB.TimeSync
 			GlobalMessenger.RemoveListener(OWEvents.WakeUp, OnWakeUp);
 		}
 
-		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
+		private void OnSceneLoaded(QSBScene oldScene, QSBScene newScene, bool isInUniverse)
 		{
 			_hasWokenUp = false;
 			if (isInUniverse)
 			{
-				if (newScene == OWScene.EyeOfTheUniverse)
+				if (newScene == QSBScene.EyeOfTheUniverse)
 				{
 					_hasWokenUp = true;
 				}

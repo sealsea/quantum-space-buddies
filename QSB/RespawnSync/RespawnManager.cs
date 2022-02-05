@@ -55,7 +55,7 @@ namespace QSB.RespawnSync
 			_qsbRecoveryPoint?.SetActive(false);
 		}
 
-		private void Init(OWScene newScene, bool inUniverse)
+		private void Init(QSBScene newScene, bool inUniverse)
 		{
 			if (!QSBCore.IsInMultiplayer)
 			{
@@ -73,7 +73,7 @@ namespace QSB.RespawnSync
 			QSBPlayerManager.PlayerList.ForEach(x => x.IsDead = false);
 			_playersPendingRespawn.Clear();
 
-			if (newScene != OWScene.SolarSystem)
+			if (newScene != QSBScene.SolarSystem)
 			{
 				return;
 			}

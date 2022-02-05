@@ -32,7 +32,7 @@ namespace QSB.WorldSync
 		private static readonly Dictionary<WorldObjectManager, UniTask> _managersBuilding = new();
 		private static readonly Dictionary<IWorldObject, UniTask> _objectsIniting = new();
 
-		public static async UniTaskVoid BuildWorldObjects(OWScene scene)
+		public static async UniTaskVoid BuildWorldObjects(QSBScene scene)
 		{
 			if (_cts != null)
 			{
@@ -53,8 +53,8 @@ namespace QSB.WorldSync
 			{
 				switch (manager.WorldObjectType)
 				{
-					case WorldObjectType.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:
-					case WorldObjectType.Eye when QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse:
+					case WorldObjectType.SolarSystem when QSBSceneManager.CurrentScene != QSBScene.SolarSystem:
+					case WorldObjectType.Eye when QSBSceneManager.CurrentScene != QSBScene.EyeOfTheUniverse:
 						DebugLog.DebugWrite($"skipping {manager} as it is type {manager.WorldObjectType} and scene is {QSBSceneManager.CurrentScene}");
 						continue;
 				}

@@ -28,7 +28,7 @@ namespace QSB.TimeSync
 			QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoad;
 		}
 
-		private void OnUniverseSceneLoad(OWScene oldScene, OWScene newScene)
+		private void OnUniverseSceneLoad(QSBScene oldScene, QSBScene newScene)
 		{
 			_isSetUp = true;
 			var obj = QSBWorldSync.GetUnityObjects<SleepTimerUI>().First();

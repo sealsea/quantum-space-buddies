@@ -67,7 +67,7 @@ namespace QSB.SectorSync.WorldObjects
 
 			if (AttachedObject.name is "Sector_Shuttle" or "Sector_NomaiShuttleInterior")
 			{
-				if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+				if (QSBSceneManager.CurrentScene == QSBScene.SolarSystem)
 				{
 					var shuttleController = AttachedObject.gameObject.GetComponentInParent<NomaiShuttleController>();
 					if (shuttleController == null)
@@ -81,7 +81,7 @@ namespace QSB.SectorSync.WorldObjects
 						return false;
 					}
 				}
-				else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
+				else if (QSBSceneManager.CurrentScene == QSBScene.EyeOfTheUniverse)
 				{
 					var shuttleController = QSBWorldSync.GetUnityObjects<EyeShuttleController>().First();
 					if (shuttleController == null)

@@ -154,7 +154,7 @@ namespace QSB.Syncs
 			}
 		}
 
-		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
+		private void OnSceneLoaded(QSBScene oldScene, QSBScene newScene, bool isInUniverse)
 		{
 			if (IsInitialized)
 			{

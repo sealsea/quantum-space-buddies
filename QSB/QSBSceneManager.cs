@@ -2,27 +2,38 @@
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
+using UnityEngine.SceneManagement;
 
 namespace QSB
 {
 	public static class QSBSceneManager
 	{
-		public static OWScene CurrentScene => LoadManager.GetCurrentScene();
+		public static QSBScene CurrentScene => SceneManager.GetActiveScene().ToQSBScene();
 
 		public static bool IsInUniverse => InUniverse(CurrentScene);
 
-		public static event Action<OWScene, OWScene, bool> OnSceneLoaded;
-		public static event Action<OWScene, OWScene> OnUniverseSceneLoaded;
+		public static event Action<QSBScene, QSBScene, bool> OnSceneLoaded;
+		public static event Action<QSBScene, QSBScene> OnUniverseSceneLoaded;
+
+		private static QSBScene oldScene;
 
 		static QSBSceneManager()
 		{
-			LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
+			SceneManager.sceneUnloaded += OnUnloadScene;
+			SceneManager.sceneLoaded += OnCompleteSceneLoad;
 			DebugLog.DebugWrite("Scene Manager ready.", MessageType.Success);
 		}
 
-		private static void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
+		private static void OnUnloadScene(Scene scene)
 		{
-			DebugLog.DebugWrite($"COMPLETE SCENE LOAD ({oldScene} -> {newScene})", MessageType.Info);
+			DebugLog.DebugWrite($"UNLOAD SCENE {scene.name}");
+			oldScene = scene.ToQSBScene();
+		}
+
+		private static void OnCompleteSceneLoad(Scene scene, LoadSceneMode mode)
+		{
+			var newScene = scene.ToQSBScene();
+			DebugLog.DebugWrite($"COMPLETE SCENE LOAD ({newScene})", MessageType.Info);
 			QSBWorldSync.RemoveWorldObjects();
 			var universe = InUniverse(newScene);
 			if (QSBCore.IsInMultiplayer && universe)
@@ -37,13 +48,13 @@ namespace QSB
 				OnUniverseSceneLoaded?.SafeInvoke(oldScene, newScene);
 			}
 
-			if (newScene == OWScene.TitleScreen && QSBCore.IsInMultiplayer)
+			if (newScene == QSBScene.TitleScreen && QSBCore.IsInMultiplayer)
 			{
 				QSBNetworkManager.singleton.StopHost();
 			}
 		}
 
-		private static bool InUniverse(OWScene scene) =>
-			scene is OWScene.SolarSystem or OWScene.EyeOfTheUniverse;
+		private static bool InUniverse(QSBScene scene) =>
+			scene is QSBScene.SolarSystem or QSBScene.EyeOfTheUniverse or QSBScene.DebugScene;
 	}
 }

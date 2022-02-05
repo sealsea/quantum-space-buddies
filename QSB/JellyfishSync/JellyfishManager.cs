@@ -13,7 +13,7 @@ namespace QSB.JellyfishSync
 
 		public static readonly List<JellyfishController> Jellyfish = new();
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+		public override async UniTask BuildWorldObjects(QSBScene scene, CancellationToken ct)
 		{
 			Jellyfish.Clear();
 			Jellyfish.AddRange(QSBWorldSync.GetUnityObjects<JellyfishController>().SortDeterministic());
