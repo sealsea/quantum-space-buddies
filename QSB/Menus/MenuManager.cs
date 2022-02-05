@@ -8,6 +8,7 @@ using QSB.Utility;
 using System;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace QSB.Menus
@@ -35,6 +36,7 @@ namespace QSB.Menus
 		private GameObject ResumeGameButton;
 		private GameObject NewGameButton;
 		private GameObject ClientButton;
+		private Button DebugSceneButton;
 
 		private const int _ClientButtonIndex = 2;
 		private const int _DisconnectIndex = 3;
@@ -246,6 +248,12 @@ namespace QSB.Menus
 			}
 		}
 
+		private void LoadDebugScene()
+		{
+			DebugLog.DebugWrite($"LoadDebugScene");
+			SceneManager.LoadScene("DebugScene");
+		}
+
 		private void MakeTitleMenus()
 		{
 			CreateCommonPopups();
@@ -255,6 +263,9 @@ namespace QSB.Menus
 
 			ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
 			NewGameButton = GameObject.Find("MainMenuLayoutGroup/Button-NewGame");
+
+			DebugSceneButton = MenuApi.TitleScreen_MakeSimpleButton("LOAD DEBUG SCENE", _ClientButtonIndex);
+			DebugSceneButton.onClick.AddListener(LoadDebugScene);
 
 			if (QSBCore.IsInMultiplayer)
 			{

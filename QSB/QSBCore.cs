@@ -66,6 +66,7 @@ namespace QSB
 			ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/conversation");
 			DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
 			TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
+			Helper.Assets.LoadBundle("AssetBundles/debugscene");
 
 			DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
 
