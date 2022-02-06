@@ -37,6 +37,9 @@ namespace QSB.Patches
 				},
 				{
 					QSBPatchTypes.RespawnTime, new Harmony("QSB.Death")
+				},
+				{
+					QSBPatchTypes.OnModStart, new Harmony("QSB.ModStart")
 				}
 			};
 

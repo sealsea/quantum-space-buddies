@@ -5,6 +5,7 @@
 		OnClientConnect,
 		OnNonServerClientConnect,
 		OnServerClientConnect,
-		RespawnTime
+		RespawnTime,
+		OnModStart
 	}
 }

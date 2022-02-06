@@ -82,6 +82,8 @@ namespace QSB
 			QSBWorldSync.Managers = components.OfType<WorldObjectManager>().ToArray();
 			QSBPatchManager.OnPatchType += OnPatchType;
 			QSBPatchManager.OnUnpatchType += OnUnpatchType;
+
+			QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
 		}
 
 		private static void OnPatchType(QSBPatchTypes type)

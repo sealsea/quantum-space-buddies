@@ -33,7 +33,7 @@ namespace QSB
 		private static void OnCompleteSceneLoad(Scene scene, LoadSceneMode mode)
 		{
 			var newScene = scene.ToQSBScene();
-			DebugLog.DebugWrite($"COMPLETE SCENE LOAD ({newScene})", MessageType.Info);
+			DebugLog.DebugWrite($"COMPLETE SCENE LOAD ({oldScene} -> {newScene})", MessageType.Info);
 			QSBWorldSync.RemoveWorldObjects();
 			var universe = InUniverse(newScene);
 			if (QSBCore.IsInMultiplayer && universe)
