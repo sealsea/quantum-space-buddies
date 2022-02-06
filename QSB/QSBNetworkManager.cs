@@ -82,12 +82,15 @@ namespace QSB
 				eosSdkComponent.epicLoggerLevel = LogLevel.Info;
 				eosSdkComponent.collectPlayerMetrics = false;
 
-				var property = typeof(EpicPlatformManager).GetProperty("platformInterface", BindingFlags.Public | BindingFlags.Static);
-				if (property != null)
+				var instanceProperty = typeof(EpicPlatformManager).GetProperty("instance", BindingFlags.Public | BindingFlags.Static);
+				if (instanceProperty != null)
 				{
 					// we are on epic version, do a hack
 					DebugLog.DebugWrite("doing epic hack");
-					property.SetValue(null, eosSdkComponent.EOS);
+					var instance = (EpicPlatformManager)instanceProperty.GetValue(null);
+					typeof(EpicPlatformManager)
+						.GetField("_platformInterface", BindingFlags.NonPublic | BindingFlags.Instance)
+						.SetValue(instance, eosSdkComponent.EOS);
 					DebugLog.DebugWrite("hack done");
 				}
 
