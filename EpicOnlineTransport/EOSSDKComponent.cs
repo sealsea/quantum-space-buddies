@@ -340,7 +340,7 @@ namespace EpicTransport
 
 		public static void Initialize()
 		{
-			if (Initialized || IsConnecting)
+			if (Instance.Initialized || Instance.IsConnecting)
 			{
 				return;
 			}
