@@ -126,9 +126,23 @@ namespace EpicTransport
 			}
 		}
 
-		public static bool Initialized;
+		protected bool initialized;
+		public static bool Initialized
+		{
+			get
+			{
+				return Instance.initialized;
+			}
+		}
 
-		public static bool IsConnecting;
+		protected bool isConnecting;
+		public static bool IsConnecting
+		{
+			get
+			{
+				return Instance.isConnecting;
+			}
+		}
 
 		protected static EOSSDKComponent instance;
 		public static EOSSDKComponent Instance
@@ -234,13 +248,13 @@ namespace EpicTransport
 
 		protected void InitializeImplementation()
 		{
+			isConnecting = true;
+
 			if (EOS != null)
 			{
 				// eos set by network manager (hack)
 				return;
 			}
-
-			IsConnecting = true;
 
 			var initializeOptions = new InitializeOptions()
 			{
@@ -340,7 +354,7 @@ namespace EpicTransport
 
 		public static void Initialize()
 		{
-			if (Instance.Initialized || Instance.IsConnecting)
+			if (Instance.initialized || Instance.isConnecting)
 			{
 				return;
 			}
@@ -431,8 +445,8 @@ namespace EpicTransport
 					localUserProductId = loginCallbackInfo.LocalUserId;
 				}
 
-				Initialized = true;
-				IsConnecting = false;
+				initialized = true;
+				isConnecting = false;
 
 				var authExpirationOptions = new Epic.OnlineServices.Connect.AddNotifyAuthExpirationOptions();
 				authExpirationHandle = EOS.GetConnectInterface().AddNotifyAuthExpiration(authExpirationOptions, null, OnAuthExpiration);
