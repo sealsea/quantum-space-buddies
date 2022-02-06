@@ -1,4 +1,5 @@
 ﻿using Epic.OnlineServices.Logging;
+using Epic.OnlineServices.Platform;
 using EpicTransport;
 using Mirror;
 using OWML.Common;
@@ -24,6 +25,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -65,15 +67,31 @@ namespace QSB
 			}
 			else
 			{
+				var property = typeof(EpicPlatformManager).GetProperty("platformInterface", BindingFlags.Public | BindingFlags.Static);
+				if (property != null)
+				{
+					// we are on epic version, do a hack
+					DebugLog.DebugWrite("doing epic hack");
+					Delay.RunWhen(() => property.GetValue(null) != null, () =>
+					{
+						DebugLog.DebugWrite("got platform interface");
+						var platformInterface = (PlatformInterface)property.GetValue(null);
+						EOSSDKComponent.Instance.EOS = platformInterface;
+						DebugLog.DebugWrite("set EOSSDKComponent.Instance.EOS");
+					});
+					return;
+				}
+
 				// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
+				// actually use the game's api key instead, hopefully it works
 				var eosApiKey = ScriptableObject.CreateInstance<EosApiKey>();
-				eosApiKey.epicProductName = "QSB";
-				eosApiKey.epicProductVersion = "1.0";
-				eosApiKey.epicProductId = "d4623220acb64419921c72047931b165";
-				eosApiKey.epicSandboxId = "d9bc4035269747668524931b0840ca29";
-				eosApiKey.epicDeploymentId = "1f164829371e4cdcb23efedce98d99ad";
-				eosApiKey.epicClientId = "xyza7891TmlpkaiDv6KAnJH0f07aAbTu";
-				eosApiKey.epicClientSecret = "ft17miukylHF877istFuhTgq+Kw1le3Pfigvf9Dtu20";
+				eosApiKey.epicProductName = Application.productName;
+				eosApiKey.epicProductVersion = Application.version;
+				eosApiKey.epicProductId = "prod-starfish";
+				eosApiKey.epicSandboxId = "starfish";
+				eosApiKey.epicDeploymentId = "e176ecc84fbc4dd8934664684f44dc71";
+				eosApiKey.epicClientId = "5c553c6accee4111bc8ea3a3ae52229b";
+				eosApiKey.epicClientSecret = "k87Nfp75BzPref4nJFnnbNjYXQQR";
 
 				var eosSdkComponent = gameObject.AddComponent<EOSSDKComponent>();
 				eosSdkComponent.apiKeys = eosApiKey;

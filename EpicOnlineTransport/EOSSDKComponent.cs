@@ -70,7 +70,7 @@ namespace EpicTransport
 		private string connectInterfaceCredentialToken = null;
 		public static void SetConnectInterfaceCredentialToken(string credentialToken) => Instance.connectInterfaceCredentialToken = credentialToken;
 
-		private PlatformInterface EOS;
+		public PlatformInterface EOS;
 
 		// Interfaces
 		public static Epic.OnlineServices.Achievements.AchievementsInterface GetAchievementsInterface() => Instance.EOS.GetAchievementsInterface();
@@ -145,7 +145,7 @@ namespace EpicTransport
 		}
 
 		protected static EOSSDKComponent instance;
-		protected static EOSSDKComponent Instance
+		public static EOSSDKComponent Instance
 		{
 			get
 			{
@@ -249,6 +249,12 @@ namespace EpicTransport
 		protected void InitializeImplementation()
 		{
 			isConnecting = true;
+
+			if (EOS != null)
+			{
+				// eos set by network manager (hack)
+				return;
+			}
 
 			var initializeOptions = new InitializeOptions()
 			{
