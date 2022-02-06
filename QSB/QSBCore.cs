@@ -87,6 +87,8 @@ namespace QSB
 					await UniTask.WaitUntil(() => property.GetValue(null) != null);
 					DebugLog.DebugWrite("got platform interface");
 					EOSSDKComponent.EOS = (PlatformInterface)property.GetValue(null);
+					EOSSDKComponent.IsConnecting = false;
+					EOSSDKComponent.Initialized = true;
 					DebugLog.DebugWrite("hack done");
 				}
 			}
