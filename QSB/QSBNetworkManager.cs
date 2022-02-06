@@ -67,21 +67,6 @@ namespace QSB
 			}
 			else
 			{
-				var property = typeof(EpicPlatformManager).GetProperty("platformInterface", BindingFlags.Public | BindingFlags.Static);
-				if (property != null)
-				{
-					// we are on epic version, do a hack
-					DebugLog.DebugWrite("doing epic hack");
-					Delay.RunWhen(() => property.GetValue(null) != null, () =>
-					{
-						DebugLog.DebugWrite("got platform interface");
-						var platformInterface = (PlatformInterface)property.GetValue(null);
-						EOSSDKComponent.Instance.EOS = platformInterface;
-						DebugLog.DebugWrite("set EOSSDKComponent.Instance.EOS");
-					});
-					return;
-				}
-
 				// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
 				// actually use the game's api key instead, hopefully it works
 				var eosApiKey = ScriptableObject.CreateInstance<EosApiKey>();
@@ -97,6 +82,15 @@ namespace QSB
 				eosSdkComponent.apiKeys = eosApiKey;
 				eosSdkComponent.epicLoggerLevel = LogLevel.Info;
 				eosSdkComponent.collectPlayerMetrics = false;
+
+				var property = typeof(EpicPlatformManager).GetProperty("platformInterface", BindingFlags.Public | BindingFlags.Static);
+				if (property != null)
+				{
+					// we are on epic version, do a hack
+					DebugLog.DebugWrite("doing epic hack");
+					property.SetValue(null, eosSdkComponent.EOS);
+					DebugLog.DebugWrite("hack done");
+				}
 
 				var eosTransport = gameObject.AddComponent<EosTransport>();
 				eosTransport.SetTransportError = error => _lastTransportError = error;
