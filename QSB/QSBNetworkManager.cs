@@ -1,5 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using Epic.OnlineServices.Logging;
+﻿using Epic.OnlineServices.Logging;
 using Epic.OnlineServices.Platform;
 using EpicTransport;
 using Mirror;
@@ -58,7 +57,7 @@ namespace QSB
 			"Failed to resolve host: .*"
 		};
 
-		public override void Awake() => UniTask.Create(async () =>
+		public override void Awake()
 		{
 			gameObject.SetActive(false);
 
@@ -73,10 +72,14 @@ namespace QSB
 				{
 					// we are on epic version, do a hack
 					DebugLog.DebugWrite("doing epic hack");
-					await UniTask.WaitUntil(() => property.GetValue(null) != null);
-					DebugLog.DebugWrite("got platform interface");
-					EOSSDKComponent.EOS = (PlatformInterface)property.GetValue(null);
-					DebugLog.DebugWrite("hack done");
+					Delay.RunWhen(() => property.GetValue(null) != null, () =>
+					{
+						DebugLog.DebugWrite("got platform interface");
+						var platformInterface = (PlatformInterface)property.GetValue(null);
+						EOSSDKComponent.EOS = platformInterface;
+						DebugLog.DebugWrite("set EOSSDKComponent.Instance.EOS");
+					});
+					return;
 				}
 
 				// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
@@ -128,7 +131,7 @@ namespace QSB
 			spawnPrefabs.Add(OccasionalPrefab);
 
 			ConfigureNetworkManager();
-		});
+		}
 
 		private void InitPlayerName() =>
 			Delay.RunWhen(PlayerData.IsLoaded, () =>
