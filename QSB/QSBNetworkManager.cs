@@ -1,6 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using Epic.OnlineServices.Logging;
-using Epic.OnlineServices.Platform;
+﻿using Epic.OnlineServices.Logging;
 using EpicTransport;
 using Mirror;
 using OWML.Common;
@@ -26,7 +24,6 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -58,7 +55,7 @@ namespace QSB
 			"Failed to resolve host: .*"
 		};
 
-		public override void Awake() => UniTask.Create(async () =>
+		public override void Awake()
 		{
 			gameObject.SetActive(false);
 
@@ -68,17 +65,6 @@ namespace QSB
 			}
 			else
 			{
-				var property = typeof(EpicPlatformManager).GetProperty("platformInterface", BindingFlags.Public | BindingFlags.Static);
-				if (property != null)
-				{
-					// we are on epic version, do a hack
-					DebugLog.DebugWrite("doing epic hack");
-					await UniTask.WaitUntil(() => property.GetValue(null) != null);
-					DebugLog.DebugWrite("got platform interface");
-					EOSSDKComponent.EOS = (PlatformInterface)property.GetValue(null);
-					DebugLog.DebugWrite("hack done");
-				}
-
 				// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
 				// actually use the game's api key instead, hopefully it works
 				var eosApiKey = ScriptableObject.CreateInstance<EosApiKey>();
@@ -128,7 +114,7 @@ namespace QSB
 			spawnPrefabs.Add(OccasionalPrefab);
 
 			ConfigureNetworkManager();
-		});
+		}
 
 		private void InitPlayerName() =>
 			Delay.RunWhen(PlayerData.IsLoaded, () =>
