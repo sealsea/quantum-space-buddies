@@ -1,7 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using Epic.OnlineServices.Platform;
-using EpicTransport;
-using Mirror;
+﻿using Mirror;
 using OWML.Common;
 using OWML.ModHelper;
 using QSB.Menus;
@@ -57,7 +54,7 @@ namespace QSB
 			UIHelper.ReplaceUI(UITextType.PleaseUseController,
 				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
 
-		public void Start() => UniTask.Create(async () =>
+		public void Start()
 		{
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
@@ -77,20 +74,6 @@ namespace QSB
 			QSBPatchManager.Init();
 			DeterministicManager.Init();
 
-			if (!DebugSettings.UseKcpTransport)
-			{
-				var property = typeof(EpicPlatformManager).GetProperty("platformInterface", BindingFlags.Public | BindingFlags.Static);
-				if (property != null)
-				{
-					// we are on epic version, do a hack
-					DebugLog.DebugWrite("doing epic hack");
-					await UniTask.WaitUntil(() => property.GetValue(null) != null);
-					DebugLog.DebugWrite("got platform interface");
-					EOSSDKComponent.EOS = (PlatformInterface)property.GetValue(null);
-					DebugLog.DebugWrite("hack done");
-				}
-			}
-
 			var components = typeof(IAddComponentOnStart).GetDerivedTypes()
 				.Select(x => gameObject.AddComponent(x))
 				.ToArray();
@@ -98,7 +81,7 @@ namespace QSB
 			QSBWorldSync.Managers = components.OfType<WorldObjectManager>().ToArray();
 			QSBPatchManager.OnPatchType += OnPatchType;
 			QSBPatchManager.OnUnpatchType += OnUnpatchType;
-		});
+		}
 
 		private static void OnPatchType(QSBPatchTypes type)
 		{
