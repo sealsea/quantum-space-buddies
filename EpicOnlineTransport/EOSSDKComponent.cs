@@ -70,25 +70,25 @@ namespace EpicTransport
 		private string connectInterfaceCredentialToken = null;
 		public static void SetConnectInterfaceCredentialToken(string credentialToken) => Instance.connectInterfaceCredentialToken = credentialToken;
 
-		public PlatformInterface EOS;
+		public static PlatformInterface EOS;
 
 		// Interfaces
-		public static Epic.OnlineServices.Achievements.AchievementsInterface GetAchievementsInterface() => Instance.EOS.GetAchievementsInterface();
-		public static Epic.OnlineServices.Auth.AuthInterface GetAuthInterface() => Instance.EOS.GetAuthInterface();
-		public static Epic.OnlineServices.Connect.ConnectInterface GetConnectInterface() => Instance.EOS.GetConnectInterface();
-		public static Epic.OnlineServices.Ecom.EcomInterface GetEcomInterface() => Instance.EOS.GetEcomInterface();
-		public static Epic.OnlineServices.Friends.FriendsInterface GetFriendsInterface() => Instance.EOS.GetFriendsInterface();
-		public static Epic.OnlineServices.Leaderboards.LeaderboardsInterface GetLeaderboardsInterface() => Instance.EOS.GetLeaderboardsInterface();
-		public static Epic.OnlineServices.Lobby.LobbyInterface GetLobbyInterface() => Instance.EOS.GetLobbyInterface();
-		public static Epic.OnlineServices.Metrics.MetricsInterface GetMetricsInterface() => Instance.EOS.GetMetricsInterface(); // Handled by the transport automatically, only use this interface if Mirror is not used for singleplayer
-		public static Epic.OnlineServices.Mods.ModsInterface GetModsInterface() => Instance.EOS.GetModsInterface();
-		public static Epic.OnlineServices.P2P.P2PInterface GetP2PInterface() => Instance.EOS.GetP2PInterface();
-		public static Epic.OnlineServices.PlayerDataStorage.PlayerDataStorageInterface GetPlayerDataStorageInterface() => Instance.EOS.GetPlayerDataStorageInterface();
-		public static Epic.OnlineServices.Presence.PresenceInterface GetPresenceInterface() => Instance.EOS.GetPresenceInterface();
-		public static Epic.OnlineServices.Sessions.SessionsInterface GetSessionsInterface() => Instance.EOS.GetSessionsInterface();
-		public static Epic.OnlineServices.TitleStorage.TitleStorageInterface GetTitleStorageInterface() => Instance.EOS.GetTitleStorageInterface();
-		public static Epic.OnlineServices.UI.UIInterface GetUIInterface() => Instance.EOS.GetUIInterface();
-		public static Epic.OnlineServices.UserInfo.UserInfoInterface GetUserInfoInterface() => Instance.EOS.GetUserInfoInterface();
+		public static Epic.OnlineServices.Achievements.AchievementsInterface GetAchievementsInterface() => EOS.GetAchievementsInterface();
+		public static Epic.OnlineServices.Auth.AuthInterface GetAuthInterface() => EOS.GetAuthInterface();
+		public static Epic.OnlineServices.Connect.ConnectInterface GetConnectInterface() => EOS.GetConnectInterface();
+		public static Epic.OnlineServices.Ecom.EcomInterface GetEcomInterface() => EOS.GetEcomInterface();
+		public static Epic.OnlineServices.Friends.FriendsInterface GetFriendsInterface() => EOS.GetFriendsInterface();
+		public static Epic.OnlineServices.Leaderboards.LeaderboardsInterface GetLeaderboardsInterface() => EOS.GetLeaderboardsInterface();
+		public static Epic.OnlineServices.Lobby.LobbyInterface GetLobbyInterface() => EOS.GetLobbyInterface();
+		public static Epic.OnlineServices.Metrics.MetricsInterface GetMetricsInterface() => EOS.GetMetricsInterface(); // Handled by the transport automatically, only use this interface if Mirror is not used for singleplayer
+		public static Epic.OnlineServices.Mods.ModsInterface GetModsInterface() => EOS.GetModsInterface();
+		public static Epic.OnlineServices.P2P.P2PInterface GetP2PInterface() => EOS.GetP2PInterface();
+		public static Epic.OnlineServices.PlayerDataStorage.PlayerDataStorageInterface GetPlayerDataStorageInterface() => EOS.GetPlayerDataStorageInterface();
+		public static Epic.OnlineServices.Presence.PresenceInterface GetPresenceInterface() => EOS.GetPresenceInterface();
+		public static Epic.OnlineServices.Sessions.SessionsInterface GetSessionsInterface() => EOS.GetSessionsInterface();
+		public static Epic.OnlineServices.TitleStorage.TitleStorageInterface GetTitleStorageInterface() => EOS.GetTitleStorageInterface();
+		public static Epic.OnlineServices.UI.UIInterface GetUIInterface() => EOS.GetUIInterface();
+		public static Epic.OnlineServices.UserInfo.UserInfoInterface GetUserInfoInterface() => EOS.GetUserInfoInterface();
 
 		protected EpicAccountId localUserAccountId;
 		public static EpicAccountId LocalUserAccountId
@@ -163,7 +163,7 @@ namespace EpicTransport
 		public static void Tick()
 		{
 			instance.platformTickTimer -= Time.deltaTime;
-			instance.EOS.Tick();
+			EOS.Tick();
 		}
 
 		// If we're in editor, we should dynamically load and unload the SDK between play sessions.

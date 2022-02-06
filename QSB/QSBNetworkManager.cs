@@ -76,7 +76,7 @@ namespace QSB
 					{
 						DebugLog.DebugWrite("got platform interface");
 						var platformInterface = (PlatformInterface)property.GetValue(null);
-						EOSSDKComponent.Instance.EOS = platformInterface;
+						EOSSDKComponent.EOS = platformInterface;
 						DebugLog.DebugWrite("set EOSSDKComponent.Instance.EOS");
 					});
 					return;
