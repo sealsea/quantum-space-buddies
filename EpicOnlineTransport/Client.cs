@@ -20,11 +20,11 @@ namespace EpicTransport
 		public event Action OnDisconnected;
 		private Action<string> SetTransportError;
 
-		private TimeSpan ConnectionTimeout;
+		private readonly TimeSpan ConnectionTimeout;
 
 		public bool isConnecting = false;
 		public string hostAddress = "";
-		private ProductUserId hostProductId = null;
+		private ProductUserId hostProductId;
 		private TaskCompletionSource<Task> connectedComplete;
 		private CancellationTokenSource cancelToken;
 
@@ -35,10 +35,11 @@ namespace EpicTransport
 
 		public static Client CreateClient(EosTransport transport, string host)
 		{
-			Client c = new Client(transport);
-
-			c.hostAddress = host;
-			c.socketId = new SocketId() { SocketName = RandomString.Generate(20) };
+			var c = new Client(transport)
+			{
+				hostAddress = host,
+				socketId = new SocketId { SocketName = RandomString.Generate(20) }
+			};
 
 			c.OnConnected += () => transport.OnClientConnected.Invoke();
 			c.OnDisconnected += () => transport.OnClientDisconnected.Invoke();
@@ -152,7 +153,7 @@ namespace EpicTransport
 			if (hostProductId == result.RemoteUserId)
 			{
 				EOSSDKComponent.GetP2PInterface().AcceptConnection(
-					new AcceptConnectionOptions()
+					new AcceptConnectionOptions
 					{
 						LocalUserId = EOSSDKComponent.LocalUserProductId,
 						RemoteUserId = result.RemoteUserId,
