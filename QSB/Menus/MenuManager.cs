@@ -368,6 +368,7 @@ namespace QSB.Menus
 			}
 
 			QSBNetworkManager.singleton.networkAddress = address;
+			// hack to get disconnect call if start client fails immediately
 			typeof(NetworkClient).GetProperty(nameof(NetworkClient.connection)).SetValue(null, new NetworkConnectionToServer());
 			QSBNetworkManager.singleton.StartClient();
 		}
@@ -415,6 +416,7 @@ namespace QSB.Menus
 		{
 			if (_intentionalDisconnect)
 			{
+				DebugLog.DebugWrite("intentional disconnect. dont show popup");
 				_intentionalDisconnect = false;
 				return;
 			}
