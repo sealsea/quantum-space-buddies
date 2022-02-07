@@ -13,7 +13,7 @@ namespace Mirror.FizzySteam
 		public bool Connected { get; private set; }
 		public bool Error { get; private set; }
 
-		private TimeSpan ConnectionTimeout;
+		private readonly TimeSpan ConnectionTimeout;
 
 		private event Action<byte[], int> OnReceivedData;
 		private event Action OnConnected;
@@ -116,7 +116,7 @@ namespace Mirror.FizzySteam
 
 		private void OnMessageReceived(IntPtr dataPtr, int size)
 		{
-			(var data, var ch) = ProcessMessage(dataPtr, size);
+			var (data, ch) = ProcessMessage(dataPtr, size);
 			if (Connected)
 			{
 				OnReceivedData(data, ch);
@@ -129,7 +129,6 @@ namespace Mirror.FizzySteam
 
 		private void OnConnectionStatusChanged(Connection conn, ConnectionInfo info)
 		{
-			ulong clientSteamID = info.Identity.SteamId;
 			if (info.State == ConnectionState.Connected)
 			{
 				Connected = true;

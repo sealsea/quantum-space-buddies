@@ -20,15 +20,15 @@ namespace Mirror.FizzySteam
 		{
 			var s = new LegacyServer(transport, maxConnections);
 
-			s.OnConnected += (id) => transport.OnServerConnected.Invoke(id);
-			s.OnDisconnected += (id) => transport.OnServerDisconnected.Invoke(id);
+			s.OnConnected += id => transport.OnServerConnected.Invoke(id);
+			s.OnDisconnected += id => transport.OnServerDisconnected.Invoke(id);
 			s.OnReceivedData += (id, data, channel) => transport.OnServerDataReceived.Invoke(id, new ArraySegment<byte>(data), channel);
 			s.OnReceivedError += (id, exception) => transport.OnServerError.Invoke(id, exception);
 
-			SteamNetworking.OnP2PSessionRequest = (steamid) =>
+			SteamNetworking.OnP2PSessionRequest = steamId =>
 			{
-				Debug.LogError($"Incoming request from SteamId {steamid}.");
-				SteamNetworking.AcceptP2PSessionWithUser(steamid);
+				Debug.LogError($"Incoming request from SteamId {steamId}.");
+				SteamNetworking.AcceptP2PSessionWithUser(steamId);
 			};
 
 			if (!SteamClient.IsValid)
@@ -95,7 +95,7 @@ namespace Mirror.FizzySteam
 			else
 			{
 				CloseP2PSessionWithUser(clientSteamID);
-				Debug.LogError("Data received from steam client thats not known " + clientSteamID);
+				Debug.LogError("Data received from steam client that's not known " + clientSteamID);
 				OnReceivedError.Invoke(-1, new Exception("ERROR Unknown SteamID"));
 			}
 		}
@@ -124,7 +124,6 @@ namespace Mirror.FizzySteam
 			SteamNetworking.OnP2PSessionRequest = null;
 			Dispose();
 		}
-
 
 		public void Send(int connectionId, byte[] data, int channelId)
 		{

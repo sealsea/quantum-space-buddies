@@ -32,8 +32,8 @@ namespace Mirror.FizzySteam
 		{
 			var s = new NextServer(maxConnections);
 
-			s.OnConnected += (id) => transport.OnServerConnected.Invoke(id);
-			s.OnDisconnected += (id) => transport.OnServerDisconnected.Invoke(id);
+			s.OnConnected += id => transport.OnServerConnected.Invoke(id);
+			s.OnDisconnected += id => transport.OnServerDisconnected.Invoke(id);
 			s.OnReceivedData += (id, data, ch) => transport.OnServerDataReceived.Invoke(id, new ArraySegment<byte>(data), ch);
 			s.OnReceivedError += (id, exception) => transport.OnServerError.Invoke(id, exception);
 
@@ -67,14 +67,9 @@ namespace Mirror.FizzySteam
 
 				Result res;
 
-				if ((res = conn.Accept()) == Result.OK)
-				{
-					Debug.LogError($"Accepting connection {clientSteamID}");
-				}
-				else
-				{
-					Debug.LogError($"Connection {clientSteamID} could not be accepted: {res.ToString()}");
-				}
+				Debug.LogError((res = conn.Accept()) == Result.OK
+					? $"Accepting connection {clientSteamID}"
+					: $"Connection {clientSteamID} could not be accepted: {res}");
 			}
 			else if (info.State == ConnectionState.Connected)
 			{
@@ -134,7 +129,7 @@ namespace Mirror.FizzySteam
 
 		private void OnMessageReceived(Connection conn, IntPtr dataPtr, int size)
 		{
-			(var data, var ch) = ProcessMessage(dataPtr, size);
+			var (data, ch) = ProcessMessage(dataPtr, size);
 			OnReceivedData(connToMirrorID[conn], data, ch);
 		}
 

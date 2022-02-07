@@ -17,7 +17,7 @@ namespace Mirror.FizzySteam
 			DISCONNECT
 		}
 
-		protected readonly FizzyFacepunch transport;
+		private readonly FizzyFacepunch transport;
 
 		protected LegacyCommon(FizzyFacepunch transport)
 		{
@@ -30,6 +30,7 @@ namespace Mirror.FizzySteam
 		}
 
 		protected void WaitForClose(SteamId cSteamID) => transport.StartCoroutine(DelayedClose(cSteamID));
+
 		private IEnumerator DelayedClose(SteamId cSteamID)
 		{
 			yield return null;
@@ -64,8 +65,9 @@ namespace Mirror.FizzySteam
 			}
 		}
 
-		protected bool SendInternal(SteamId target, InternalMessages type) => SteamNetworking.SendP2PPacket(target, new byte[] { (byte)type }, 1, internal_ch);
+		protected bool SendInternal(SteamId target, InternalMessages type) => SteamNetworking.SendP2PPacket(target, new[] { (byte)type }, 1, internal_ch);
 		protected void Send(SteamId host, byte[] msgBuffer, int channel) => SteamNetworking.SendP2PPacket(host, msgBuffer, msgBuffer.Length, channel, channels[Mathf.Min(channel, channels.Length - 1)]);
+
 		private bool Receive(out SteamId clientSteamID, out byte[] receiveBuffer, int channel)
 		{
 			if (SteamNetworking.IsP2PPacketAvailable(channel))
