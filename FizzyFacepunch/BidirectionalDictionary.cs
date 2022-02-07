@@ -5,8 +5,8 @@ namespace Mirror.FizzySteam
 {
 	public class BidirectionalDictionary<T1, T2> : IEnumerable
 	{
-		private readonly Dictionary<T1, T2> t1ToT2Dict = new();
-		private readonly Dictionary<T2, T1> t2ToT1Dict = new();
+		private readonly Dictionary<T1, T2> t1ToT2Dict = new Dictionary<T1, T2>();
+		private readonly Dictionary<T2, T1> t2ToT1Dict = new Dictionary<T2, T1>();
 
 		public IEnumerable<T1> FirstTypes => t1ToT2Dict.Keys;
 		public IEnumerable<T2> SecondTypes => t2ToT1Dict.Keys;
@@ -48,7 +48,6 @@ namespace Mirror.FizzySteam
 				t2ToT1Dict.Remove(val);
 			}
 		}
-
 		public void Remove(T2 key)
 		{
 			if (Contains(key))

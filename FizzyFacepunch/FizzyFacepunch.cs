@@ -96,7 +96,6 @@ namespace Mirror.FizzySteam
 		}
 
 		public override bool ClientConnected() => ClientActive() && client.Connected;
-
 		public override void ClientConnect(string address)
 		{
 			if (!SteamClient.IsValid)
@@ -158,11 +157,10 @@ namespace Mirror.FizzySteam
 				Shutdown();
 			}
 		}
-
 		public bool ClientActive() => client != null;
 
-		public override bool ServerActive() => server != null;
 
+		public override bool ServerActive() => server != null;
 		public override void ServerStart()
 		{
 			if (!SteamClient.IsValid)
@@ -219,7 +217,6 @@ namespace Mirror.FizzySteam
 				server.Send(connectionId, data, channelId);
 			}
 		}
-
 		public override void ServerDisconnect(int connectionId)
 		{
 			if (ServerActive())
@@ -227,9 +224,7 @@ namespace Mirror.FizzySteam
 				server.Disconnect(connectionId);
 			}
 		}
-
 		public override string ServerGetClientAddress(int connectionId) => ServerActive() ? server.ServerGetClientAddress(connectionId) : string.Empty;
-
 		public override void ServerStop()
 		{
 			if (ServerActive())

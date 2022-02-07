@@ -67,7 +67,6 @@ namespace Mirror.FizzySteam
 					{
 						Debug.LogError($"Connection to {host} timed out.");
 					}
-
 					OnConnected -= SetConnectedComplete;
 					Debug.LogError("Connection timed out.");
 					OnConnectionFailed(hostSteamID);
@@ -140,7 +139,6 @@ namespace Mirror.FizzySteam
 						Debug.LogError("Connection established.");
 						OnConnected.Invoke();
 					}
-
 					break;
 				case InternalMessages.DISCONNECT:
 					if (Connected)
@@ -149,7 +147,6 @@ namespace Mirror.FizzySteam
 						Debug.LogError("Disconnected.");
 						OnDisconnected.Invoke();
 					}
-
 					break;
 				default:
 					Debug.LogError("Received unknown message type");
