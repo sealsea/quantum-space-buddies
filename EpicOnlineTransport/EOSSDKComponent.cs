@@ -59,7 +59,7 @@ namespace EpicTransport
 		private string connectInterfaceCredentialToken;
 		public static void SetConnectInterfaceCredentialToken(string credentialToken) => Instance.connectInterfaceCredentialToken = credentialToken;
 
-		public PlatformInterface EOS;
+		private PlatformInterface EOS;
 
 		// Interfaces
 		public static Epic.OnlineServices.Achievements.AchievementsInterface GetAchievementsInterface() => Instance.EOS.GetAchievementsInterface();
