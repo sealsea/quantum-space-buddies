@@ -1,5 +1,5 @@
-﻿using EpicTransport;
-using Mirror;
+﻿using Mirror;
+using Mirror.FizzySteam;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
@@ -34,11 +34,12 @@ namespace QSB.Menus
 		// title screen only
 		private GameObject ResumeGameButton;
 		private GameObject NewGameButton;
-		private GameObject ConnectButton;
+		private GameObject ClientButton;
 
 		private const int _ClientButtonIndex = 2;
+		private const int _DisconnectIndex = 3;
 
-		private const string HostString = "OPEN TO MULTIPLAYER";
+		private const string OpenString = "OPEN TO MULTIPLAYER";
 		private const string ConnectString = "CONNECT TO MULTIPLAYER";
 		private const string DisconnectString = "DISCONNECT";
 		private const string StopHostingString = "STOP HOSTING";
@@ -173,7 +174,7 @@ namespace QSB.Menus
 
 		private void CreateCommonPopups()
 		{
-			var text = QSBCore.DebugSettings.UseKcpTransport ? "Public IP Address" : "Product User ID";
+			var text = QSBCore.DebugSettings.UseKcpTransport ? "Public IP Address" : "Steam ID";
 			IPPopup = MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
 			IPPopup.OnPopupConfirm += Connect;
 
@@ -203,7 +204,7 @@ namespace QSB.Menus
 		{
 			CreateCommonPopups();
 
-			HostButton = MenuApi.PauseMenu_MakeSimpleButton(HostString);
+			HostButton = MenuApi.PauseMenu_MakeSimpleButton(OpenString);
 			HostButton.onClick.AddListener(Host);
 
 			DisconnectPopup = MenuApi.MakeTwoChoicePopup("Are you sure you want to disconnect?\r\nThis will send you back to the main menu.", "YES", "NO");
@@ -249,15 +250,15 @@ namespace QSB.Menus
 		{
 			CreateCommonPopups();
 
-			ConnectButton = MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _ClientButtonIndex, IPPopup);
-			_loadingText = ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
+			ClientButton = MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _ClientButtonIndex, IPPopup);
+			_loadingText = ClientButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
 			ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
 			NewGameButton = GameObject.Find("MainMenuLayoutGroup/Button-NewGame");
 
 			if (QSBCore.IsInMultiplayer)
 			{
-				SetButtonActive(ConnectButton, false);
+				SetButtonActive(ClientButton, false);
 
 				if (QSBCore.IsHost)
 				{
@@ -272,7 +273,7 @@ namespace QSB.Menus
 			}
 			else
 			{
-				SetButtonActive(ConnectButton, true);
+				SetButtonActive(ClientButton, true);
 				Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 				SetButtonActive(NewGameButton, true);
 			}
@@ -300,7 +301,6 @@ namespace QSB.Menus
 		private void Disconnect()
 		{
 			_intentionalDisconnect = true;
-
 			QSBNetworkManager.singleton.StopHost();
 			SetButtonActive(DisconnectButton.gameObject, false);
 
@@ -314,8 +314,6 @@ namespace QSB.Menus
 
 		private void Host()
 		{
-			_intentionalDisconnect = false;
-
 			SetButtonActive(DisconnectButton, true);
 			SetButtonActive(HostButton, false);
 			SetButtonActive(QuitButton, false);
@@ -334,12 +332,12 @@ namespace QSB.Menus
 
 			if (!QSBCore.DebugSettings.UseKcpTransport)
 			{
-				var productUserId = EOSSDKComponent.LocalUserProductIdString;
+				var steamId = ((FizzyFacepunch)Transport.activeTransport).SteamUserID.ToString();
 
-				PopupOK += () => GUIUtility.systemCopyBuffer = productUserId;
+				PopupOK += () => GUIUtility.systemCopyBuffer = steamId;
 
-				OpenInfoPopup($"Hosting server.\r\nClients will connect using your product user id, which is :\r\n" +
-					$"{productUserId}\r\n" +
+				OpenInfoPopup($"Hosting server.\r\nClients will connect using your steam id, which is :\r\n" +
+					$"{steamId}\r\n" +
 					"Do you want to copy this to the clipboard?"
 					, "YES"
 					, "NO");
@@ -348,8 +346,6 @@ namespace QSB.Menus
 
 		private void Connect()
 		{
-			_intentionalDisconnect = false;
-
 			var address = ((PopupInputMenu)IPPopup).GetInputText();
 			if (address == string.Empty)
 			{
@@ -368,7 +364,6 @@ namespace QSB.Menus
 			}
 
 			QSBNetworkManager.singleton.networkAddress = address;
-			// hack to get disconnect call if start client fails immediately
 			typeof(NetworkClient).GetProperty(nameof(NetworkClient.connection)).SetValue(null, new NetworkConnectionToServer());
 			QSBNetworkManager.singleton.StartClient();
 		}
@@ -407,7 +402,7 @@ namespace QSB.Menus
 			OpenInfoPopup(text, "OK");
 
 			SetButtonActive(DisconnectButton, false);
-			SetButtonActive(ConnectButton, true);
+			SetButtonActive(ClientButton, true);
 			SetButtonActive(HostButton, true);
 			SetButtonActive(QuitButton, true);
 		}
@@ -416,7 +411,6 @@ namespace QSB.Menus
 		{
 			if (_intentionalDisconnect)
 			{
-				DebugLog.DebugWrite("intentional disconnect. dont show popup");
 				_intentionalDisconnect = false;
 				return;
 			}
@@ -432,7 +426,7 @@ namespace QSB.Menus
 			OpenInfoPopup($"Client disconnected with error!\r\n{error}", "OK");
 
 			SetButtonActive(DisconnectButton, false);
-			SetButtonActive(ConnectButton, true);
+			SetButtonActive(ClientButton, true);
 			SetButtonActive(QuitButton, true);
 			SetButtonActive(HostButton, true);
 			SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1);

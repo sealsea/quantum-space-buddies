@@ -2,6 +2,8 @@
 using Epic.OnlineServices.Auth;
 using Epic.OnlineServices.Logging;
 using Epic.OnlineServices.Platform;
+using System;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 /// <summary>
