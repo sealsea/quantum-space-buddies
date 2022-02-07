@@ -1,6 +1,5 @@
-﻿using Epic.OnlineServices.Logging;
-using EpicTransport;
-using Mirror;
+﻿using Mirror;
+using Mirror.FizzySteam;
 using OWML.Common;
 using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
@@ -54,6 +53,7 @@ namespace QSB
 			"KCP: received disconnect message",
 			"Failed to resolve host: .*"
 		};
+		private const int _defaultSteamAppID = 753640;
 
 		public override void Awake()
 		{
@@ -65,24 +65,12 @@ namespace QSB
 			}
 			else
 			{
-				// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
-				var eosApiKey = ScriptableObject.CreateInstance<EosApiKey>();
-				eosApiKey.epicProductName = "QSB";
-				eosApiKey.epicProductVersion = "1.0";
-				eosApiKey.epicProductId = "d4623220acb64419921c72047931b165";
-				eosApiKey.epicSandboxId = "d9bc4035269747668524931b0840ca29";
-				eosApiKey.epicDeploymentId = "1f164829371e4cdcb23efedce98d99ad";
-				eosApiKey.epicClientId = "xyza7891TmlpkaiDv6KAnJH0f07aAbTu";
-				eosApiKey.epicClientSecret = "ft17miukylHF877istFuhTgq+Kw1le3Pfigvf9Dtu20";
-
-				var eosSdkComponent = gameObject.AddComponent<EOSSDKComponent>();
-				eosSdkComponent.apiKeys = eosApiKey;
-				eosSdkComponent.epicLoggerLevel = LogLevel.Info;
-				eosSdkComponent.collectPlayerMetrics = false;
-
-				var eosTransport = gameObject.AddComponent<EosTransport>();
-				eosTransport.SetTransportError = error => _lastTransportError = error;
-				transport = eosTransport;
+				var fizzy = gameObject.AddComponent<FizzyFacepunch>();
+				fizzy.SteamAppID = QSBCore.DebugSettings.OverrideAppId == -1
+					? _defaultSteamAppID.ToString()
+					: QSBCore.DebugSettings.OverrideAppId.ToString();
+				fizzy.SetTransportError = error => _lastTransportError = error;
+				transport = fizzy;
 			}
 
 			gameObject.SetActive(true);
@@ -115,9 +103,8 @@ namespace QSB
 			ConfigureNetworkManager();
 		}
 
-		private void InitPlayerName() =>
-			Delay.RunWhen(PlayerData.IsLoaded, () =>
-			{
+		private void InitPlayerName() => Delay.RunWhen(PlayerData.IsLoaded,
+			() => {
 				try
 				{
 					var titleScreenManager = FindObjectOfType<TitleScreenManager>();
@@ -135,11 +122,6 @@ namespace QSB
 				{
 					DebugLog.ToConsole($"Error - Exception when getting player name : {ex}", MessageType.Error);
 					PlayerName = "Player";
-				}
-
-				if (!QSBCore.DebugSettings.UseKcpTransport)
-				{
-					EOSSDKComponent.DisplayName = PlayerName;
 				}
 			});
 

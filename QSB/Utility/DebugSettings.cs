@@ -7,6 +7,9 @@ namespace QSB.Utility
 		[JsonProperty("useKcpTransport")]
 		public bool UseKcpTransport;
 
+		[JsonProperty("overrideAppId")]
+		public int OverrideAppId = -1;
+
 		[JsonProperty("dumpWorldObjects")]
 		public bool DumpWorldObjects;
 

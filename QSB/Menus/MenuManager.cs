@@ -1,5 +1,5 @@
-﻿using EpicTransport;
-using Mirror;
+﻿using Mirror;
+using Mirror.FizzySteam;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
@@ -142,7 +142,7 @@ namespace QSB.Menus
 
 		private void OpenInfoPopup(string message, string okButtonText, string cancelButtonText)
 		{
-			TwoButtonInfoPopup.SetUpPopup(message, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(okButtonText), new ScreenPrompt(cancelButtonText), true, true);
+			TwoButtonInfoPopup.SetUpPopup(message, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(okButtonText), new ScreenPrompt(cancelButtonText));
 
 			OWTime.Pause(OWTime.PauseType.Menu);
 			OWInput.ChangeInputMode(InputMode.Menu);
@@ -175,7 +175,7 @@ namespace QSB.Menus
 
 		private void CreateCommonPopups()
 		{
-			var text = QSBCore.DebugSettings.UseKcpTransport ? "Public IP Address" : "Product User ID";
+			var text = QSBCore.DebugSettings.UseKcpTransport ? "Public IP Address" : "Steam ID";
 			IPPopup = MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
 			IPPopup.OnPopupConfirm += Connect;
 
@@ -345,12 +345,12 @@ namespace QSB.Menus
 
 			if (!QSBCore.DebugSettings.UseKcpTransport)
 			{
-				var productUserId = EOSSDKComponent.LocalUserProductIdString;
+				var steamId = ((FizzyFacepunch)Transport.activeTransport).SteamUserID.ToString();
 
-				PopupOK += () => GUIUtility.systemCopyBuffer = productUserId;
+				PopupOK += () => GUIUtility.systemCopyBuffer = steamId;
 
-				OpenInfoPopup($"Hosting server.\r\nClients will connect using your product user id, which is :\r\n" +
-					$"{productUserId}\r\n" +
+				OpenInfoPopup($"Hosting server.\r\nClients will connect using your steam id, which is :\r\n" +
+					$"{steamId}\r\n" +
 					"Do you want to copy this to the clipboard?"
 					, "YES"
 					, "NO");
