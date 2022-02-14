@@ -28,6 +28,7 @@ namespace QSB.PlayerBodySetup.Local
 			var playerBody = Locator.GetPlayerTransform();
 			var playerModel = playerBody.Find("Traveller_HEA_Player_v2");
 			player.AnimationSync.InitLocal(playerModel);
+			player.InstrumentsManager.InitLocal(playerBody);
 			player.Body = playerBody.gameObject;
 
 			// camera

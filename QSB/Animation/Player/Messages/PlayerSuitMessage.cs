@@ -21,7 +21,7 @@ namespace QSB.Animation.Player.Messages
 			}
 		}
 
-		public PlayerSuitMessage(bool on) => Value = on;
+		private PlayerSuitMessage(bool on) => Value = on;
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
@@ -36,14 +36,16 @@ namespace QSB.Animation.Player.Messages
 			}
 
 			var animator = player.AnimationSync;
-			animator.SetSuitState(Value);
+			var type = Value ? AnimationType.PlayerSuited : AnimationType.PlayerUnsuited;
+			animator.SetAnimationType(type);
 		}
 
 		public override void OnReceiveLocal()
 		{
 			QSBPlayerManager.LocalPlayer.SuitedUp = Value;
 			var animator = QSBPlayerManager.LocalPlayer.AnimationSync;
-			animator.InSuitedUpState = Value;
+			var type = Value ? AnimationType.PlayerSuited : AnimationType.PlayerUnsuited;
+			animator.CurrentType = type;
 		}
 	}
 }
