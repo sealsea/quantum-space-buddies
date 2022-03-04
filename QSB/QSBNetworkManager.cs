@@ -43,6 +43,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	public GameObject JellyfishPrefab { get; private set; }
 	public GameObject OccasionalPrefab { get; private set; }
 	public GameObject RaftPrefab { get; private set; }
+	public GameObject AirlockPrefab { get; private set; }
 	private string PlayerName { get; set; }
 
 	private const int MaxConnections = 128;
@@ -116,6 +117,9 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		RaftPrefab = MakeNewNetworkObject(8, "NetworkRaft", typeof(RaftTransformSync));
 		spawnPrefabs.Add(RaftPrefab);
+
+		AirlockPrefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_GhostAirlock.prefab");
+		AirlockPrefab.GetRequiredComponent<NetworkIdentity>().SetValue("m_AssetId", 9.ToGuid().ToString("N"));
 
 		ConfigureNetworkManager();
 	}
