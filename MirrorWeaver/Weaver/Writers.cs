@@ -219,7 +219,7 @@ namespace Mirror.Weaver
             if (!variable.Resolve().IsValueType)
                 WriteNullCheck(worker, ref WeavingFailed);
 
-            if (!WriteAllFields(variable, worker, ref WeavingFailed))
+            if (!this.WriteAllFieldsGeneric(variable, worker, ref WeavingFailed))
                 return null;
 
             worker.Emit(OpCodes.Ret);
@@ -253,7 +253,7 @@ namespace Mirror.Weaver
         // Find all fields in type and write them
         bool WriteAllFields(TypeReference variable, ILProcessor worker, ref bool WeavingFailed)
         {
-            foreach (FieldDefinition field in variable.FindAllPublicFields_Improved())
+            foreach (FieldDefinition field in variable.FindAllPublicFields())
             {
                 MethodReference writeFunc = GetWriteFunc(field.FieldType, ref WeavingFailed);
                 // need this null check till later PR when GetWriteFunc throws exception instead
