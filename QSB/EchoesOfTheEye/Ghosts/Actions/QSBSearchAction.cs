@@ -1,10 +1,8 @@
 ﻿using GhostEnums;
-using QSB.EchoesOfTheEye.Ghosts;
 using UnityEngine;
 
-/// <summary>
-/// Goes to earch search node, spins around for 4 seconds, then goes to the search node with the longest time since being searched (ish)
-/// </summary>
+namespace QSB.EchoesOfTheEye.Ghosts.Actions;
+
 public class QSBSearchAction : QSBGhostAction
 {
 	private GhostNode _targetSearchNode;
