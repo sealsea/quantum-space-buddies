@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -79,10 +80,13 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 	private void DataLines(QSBGhostData data, GhostController controller)
 	{
-		if (data.timeSincePlayerLocationKnown != float.PositiveInfinity)
+		foreach (var player in QSBPlayerManager.PlayerList)
 		{
-			Popcron.Gizmos.Line(controller.transform.position, controller.LocalToWorldPosition(data.lastKnownPlayerLocation.localPosition), Color.magenta);
-			Popcron.Gizmos.Sphere(controller.LocalToWorldPosition(data.lastKnownPlayerLocation.localPosition), 1f, Color.magenta);
+			if (data.timeSincePlayerLocationKnown[player] != float.PositiveInfinity)
+			{
+				Popcron.Gizmos.Line(controller.transform.position, controller.LocalToWorldPosition(data.lastKnownPlayerLocation[player].localPosition), Color.magenta);
+				Popcron.Gizmos.Sphere(controller.LocalToWorldPosition(data.lastKnownPlayerLocation[player].localPosition), 1f, Color.magenta);
+			}
 		}
 	}
 
@@ -134,7 +138,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 	public bool CheckDreadAudioConditions()
 	{
 		return _currentAction != null
-			&& _data.playerLocation.distance < 10f
+			&& _data.playerLocation[QSBPlayerManager.LocalPlayer].distance < 10f
 			&& _currentAction.GetName() != GhostAction.Name.Sentry
 			&& _currentAction.GetName() != GhostAction.Name.Grab;
 	}
@@ -282,7 +286,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		return false;
 	}
 
-	public bool HearCallForHelp(Vector3 playerLocalPosition, float reactDelay)
+	public bool HearCallForHelp(PlayerInfo player, Vector3 playerLocalPosition, float reactDelay)
 	{
 		if (_data.isAlive && !_data.hasWokenUp)
 		{
@@ -299,29 +303,29 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 		AttachedObject._effects.PlayRespondToHelpCallAudio(reactDelay);
 		_data.reduceGuardUtility = true;
-		_data.lastKnownPlayerLocation.UpdateLocalPosition(playerLocalPosition, AttachedObject._controller);
-		_data.wasPlayerLocationKnown = true;
-		_data.timeSincePlayerLocationKnown = 0f;
+		_data.lastKnownPlayerLocation[player].UpdateLocalPosition(playerLocalPosition, AttachedObject._controller);
+		_data.wasPlayerLocationKnown[player] = true;
+		_data.timeSincePlayerLocationKnown[player] = 0f;
 		return true;
 	}
 
-	public void HintPlayerLocation()
+	public void HintPlayerLocation(PlayerInfo player)
 	{
-		HintPlayerLocation(_data.playerLocation.localPosition, Time.time);
+		HintPlayerLocation(_data.playerLocation[player].localPosition, Time.time, player);
 	}
 
-	public void HintPlayerLocation(Vector3 localPosition, float informationTime)
+	public void HintPlayerLocation(Vector3 localPosition, float informationTime, PlayerInfo player)
 	{
-		if (!_data.hasWokenUp || _data.isPlayerLocationKnown)
+		if (!_data.hasWokenUp || _data.isPlayerLocationKnown[player])
 		{
 			return;
 		}
 
 		if (informationTime > _data.timeLastSawPlayer)
 		{
-			_data.lastKnownPlayerLocation.UpdateLocalPosition(localPosition, AttachedObject._controller);
-			_data.wasPlayerLocationKnown = true;
-			_data.timeSincePlayerLocationKnown = 0f;
+			_data.lastKnownPlayerLocation[player].UpdateLocalPosition(localPosition, AttachedObject._controller);
+			_data.wasPlayerLocationKnown[player] = true;
+			_data.timeSincePlayerLocationKnown[player] = 0f;
 		}
 	}
 
@@ -333,7 +337,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		}
 		AttachedObject._controller.FixedUpdate_Controller();
 		AttachedObject._sensors.FixedUpdate_Sensors();
-		_data.FixedUpdate_Data(AttachedObject._controller, AttachedObject._sensors);
+		_data.FixedUpdate_Data(AttachedObject._controller);
 		AttachedObject.FixedUpdate_ThreatAwareness();
 		if (_currentAction != null)
 		{
@@ -376,13 +380,17 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		{
 			return;
 		}
-		if (!AttachedObject._intruderConfirmPending && (_data.threatAwareness > GhostData.ThreatAwareness.EverythingIsNormal || _data.playerLocation.distance < 20f || _data.sensor.isPlayerIlluminatedByUs) && (_data.sensor.isPlayerVisible || _data.sensor.inContactWithPlayer))
+
+		if (!AttachedObject._intruderConfirmPending
+			&& (_data.threatAwareness > GhostData.ThreatAwareness.EverythingIsNormal || _data.playerLocation.Any(x => x.Value.distance < 20f) || _data.sensors.Any(x => x.Value.isPlayerIlluminatedByUs))
+			&& (_data.sensors.Any(x => x.Value.isPlayerVisible) || _data.sensors.Any(x => x.Value.inContactWithPlayer)))
 		{
 			AttachedObject._intruderConfirmedBySelf = true;
 			AttachedObject._intruderConfirmPending = true;
-			var num = Mathf.Lerp(0.1f, 1.5f, Mathf.InverseLerp(5f, 25f, _data.playerLocation.distance));
+			var num = Mathf.Lerp(0.1f, 1.5f, Mathf.InverseLerp(5f, 25f, _data.playerLocation.Select(x => x.Value.distance).Min()));
 			AttachedObject._intruderConfirmTime = Time.time + num;
 		}
+
 		if (AttachedObject._intruderConfirmPending && Time.time > AttachedObject._intruderConfirmTime)
 		{
 			AttachedObject.EscalateThreatAwareness(GhostData.ThreatAwareness.IntruderConfirmed);
@@ -516,7 +524,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		{
 			for (var i = 0; i < AttachedObject._helperGhosts.Length; i++)
 			{
-				AttachedObject._helperGhosts[i].HearCallForHelp(_data.playerLocation.localPosition, 3f);
+				AttachedObject._helperGhosts[i].GetWorldObject<QSBGhostBrain>().HearCallForHelp(_data.InterestedPlayer, _data.playerLocation[_data.InterestedPlayer].localPosition, 3f);
 			}
 		}
 	}

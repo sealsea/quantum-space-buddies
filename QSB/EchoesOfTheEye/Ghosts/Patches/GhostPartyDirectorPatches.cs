@@ -2,6 +2,7 @@
 using HarmonyLib;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.Patches;
+using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ internal class GhostPartyDirectorPatches : QSBPatch
 		DebugLog.DebugWrite($"Unlocking ghost {index} for ambush.");
 		var ghost = __instance._ghostsWaitingToAmbush[index].GetWorldObject<QSBGhostBrain>();
 		(ghost.GetAction(GhostAction.Name.PartyHouse) as QSBPartyHouseAction).AllowChasePlayer();
-		ghost.HintPlayerLocation();
+		ghost.HintPlayerLocation(QSBPlayerManager.LocalPlayer); // TODO - more players
 		if (firstAmbush)
 		{
 			ghost.GetEffects().PlayVoiceAudioNear(global::AudioType.Ghost_Stalk, 1f);

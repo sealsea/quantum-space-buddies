@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -208,6 +209,9 @@ public static class Extensions
 			DebugLog.ToConsole($"{self} - error {doingWhat} : {e}", MessageType.Error);
 		}
 	}
+
+	public static Dictionary<T, U> IntoDict<T, U>(this IEnumerable<T> list, U value)
+		=> list.Select(x => (x, value)).ToDictionary(x => x.x, x => x.value);
 
 	#endregion
 }

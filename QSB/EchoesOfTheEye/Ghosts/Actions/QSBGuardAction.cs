@@ -76,7 +76,7 @@ public class QSBGuardAction : QSBGhostAction
 			ContinueSearch();
 		}
 
-		var flag = _hasReachedAnySearchNode && (_data.sensor.isPlayerVisible || _data.sensor.isPlayerHeldLanternVisible);
+		var flag = _hasReachedAnySearchNode && (_data.sensors[_data.InterestedPlayer].isPlayerVisible || _data.sensors[_data.InterestedPlayer].isPlayerHeldLanternVisible);
 		if (flag)
 		{
 			_lastSawPlayer = Time.time;

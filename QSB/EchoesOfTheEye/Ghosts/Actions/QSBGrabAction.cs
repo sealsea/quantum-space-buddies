@@ -20,7 +20,7 @@ internal class QSBGrabAction : QSBGhostAction
 
 	public override float CalculateUtility()
 	{
-		if (PlayerState.IsAttached() || !_data.sensor.inContactWithPlayer)
+		if (PlayerState.IsAttached() || !_data.sensors[_data.InterestedPlayer].inContactWithPlayer)
 		{
 			return -100f;
 		}
@@ -41,7 +41,7 @@ internal class QSBGrabAction : QSBGhostAction
 		_controller.ChangeLanternFocus(0f, 2f);
 		if (_data.previousAction != GhostAction.Name.Chase)
 		{
-			_effects.AttachedObject.PlayVoiceAudioNear((_data.sensor.isPlayerVisible || PlayerData.GetReducedFrights()) ? AudioType.Ghost_Grab_Shout : AudioType.Ghost_Grab_Scream, 1f);
+			_effects.AttachedObject.PlayVoiceAudioNear((_data.sensors[_data.InterestedPlayer].isPlayerVisible || PlayerData.GetReducedFrights()) ? AudioType.Ghost_Grab_Shout : AudioType.Ghost_Grab_Scream, 1f);
 		}
 	}
 
@@ -59,12 +59,12 @@ internal class QSBGrabAction : QSBGhostAction
 		{
 			return true;
 		}
-		if (_data.playerLocation.distanceXZ > 1.7f)
+		if (_data.playerLocation[_data.InterestedPlayer].distanceXZ > 1.7f)
 		{
-			_controller.MoveToLocalPosition(_data.playerLocation.localPosition, MoveType.GRAB);
+			_controller.MoveToLocalPosition(_data.playerLocation[_data.InterestedPlayer].localPosition, MoveType.GRAB);
 		}
-		_controller.FaceLocalPosition(_data.playerLocation.localPosition, TurnSpeed.FASTEST);
-		if (_sensors.CanGrabPlayer())
+		_controller.FaceLocalPosition(_data.playerLocation[_data.InterestedPlayer].localPosition, TurnSpeed.FASTEST);
+		if (_sensors.CanGrabPlayer(_data.InterestedPlayer))
 		{
 			GrabPlayer();
 		}

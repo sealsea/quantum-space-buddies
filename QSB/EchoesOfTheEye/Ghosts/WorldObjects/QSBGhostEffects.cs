@@ -1,4 +1,5 @@
-﻿using QSB.Utility;
+﻿using QSB.Player;
+using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
@@ -42,12 +43,12 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 		}
 
 		var num = AttachedObject._stompyFootsteps ? AttachedObject._feetAudioSourceFar.maxDistance : AttachedObject._feetAudioSourceNear.maxDistance;
-		return _data.playerLocation.distance < num + 5f;
+		return _data.playerLocation[QSBPlayerManager.LocalPlayer].distance < num + 5f;
 	}
 
 	public void PlayLanternAudio(AudioType audioType)
 	{
-		if (_data.playerLocation.distance < AttachedObject._lanternAudioSource.GetAudioSource().maxDistance + 5f)
+		if (_data.playerLocation[QSBPlayerManager.LocalPlayer].distance < AttachedObject._lanternAudioSource.GetAudioSource().maxDistance + 5f)
 		{
 			AttachedObject._lanternAudioSource.PlayOneShot(audioType, 1f);
 		}
@@ -84,8 +85,8 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 		AttachedObject._smoothedTurnSpeed = AttachedObject._turnSpeedSpring.Update(AttachedObject._smoothedTurnSpeed, AttachedObject._controller.GetAngularVelocity() / 90f, Time.deltaTime);
 		AttachedObject._animator.SetFloat(GhostEffects.AnimatorKeys.Float_TurnSpeed, AttachedObject._smoothedTurnSpeed);
 
-		var target = _data.sensor.isIlluminated ? 1f : 0f;
-		var num2 = _data.sensor.isIlluminated ? 8f : 0.8f;
+		var target = _data.sensors.First().Value.isIlluminated ? 1f : 0f;
+		var num2 = _data.sensors.First().Value.isIlluminated ? 8f : 0.8f;
 		AttachedObject._eyeGlow = Mathf.MoveTowards(AttachedObject._eyeGlow, target, Time.deltaTime * num2);
 		var num3 = (Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController().GetLight().GetFlickerScale() - 1f + 0.07f) / 0.14f;
 		num3 = Mathf.Lerp(0.7f, 1f, num3);

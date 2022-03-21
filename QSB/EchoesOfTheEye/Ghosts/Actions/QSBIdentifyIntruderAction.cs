@@ -46,7 +46,7 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 			return -100f;
 		}
 
-		if (_running || (_data.sensor.isPlayerHeldLanternVisible && (_data.threatAwareness > GhostData.ThreatAwareness.EverythingIsNormal || _data.playerLocation.distance < 20f)) || _data.sensor.isIlluminatedByPlayer)
+		if (_running || (_data.sensors[_data.InterestedPlayer].isPlayerHeldLanternVisible && (_data.threatAwareness > GhostData.ThreatAwareness.EverythingIsNormal || _data.playerLocation[_data.InterestedPlayer].distance < 20f)) || _data.sensors[_data.InterestedPlayer].isIlluminatedByPlayer)
 		{
 			return 80f;
 		}
@@ -56,7 +56,7 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 
 	public override float GetActionDelay()
 	{
-		if (_data.playerLocation.distance < 8f)
+		if (_data.playerLocation[_data.InterestedPlayer].distance < 8f)
 		{
 			return 0.1f;
 		}
@@ -65,7 +65,7 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 
 	public override void OnSetAsPending()
 	{
-		if (_data.sensor.isIlluminatedByPlayer)
+		if (_data.sensors[_data.InterestedPlayer].isIlluminatedByPlayer)
 		{
 			_numTimesIlluminatedByPlayer++;
 			_allowFocusBeam = true;
@@ -92,7 +92,7 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 
 	public override bool Update_Action()
 	{
-		if (_checkingTargetLocation && !_data.isPlayerLocationKnown && _controller.GetSpeed() < 0.1f)
+		if (_checkingTargetLocation && !_data.isPlayerLocationKnown[_data.InterestedPlayer] && _controller.GetSpeed() < 0.1f)
 		{
 			_checkTimer += Time.deltaTime;
 		}
@@ -114,18 +114,18 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 	public override void FixedUpdate_Action()
 	{
 		_checkingTargetLocation = false;
-		if (!_data.wasPlayerLocationKnown && _data.isPlayerLocationKnown && _data.sensor.isIlluminatedByPlayer)
+		if (!_data.wasPlayerLocationKnown[_data.InterestedPlayer] && _data.isPlayerLocationKnown[_data.InterestedPlayer] && _data.sensors[_data.InterestedPlayer].isIlluminatedByPlayer)
 		{
 			_numTimesIlluminatedByPlayer++;
 		}
 
-		if (!_allowFocusBeam && _data.sensor.isIlluminatedByPlayer)
+		if (!_allowFocusBeam && _data.sensors[_data.InterestedPlayer].isIlluminatedByPlayer)
 		{
 			_allowFocusBeam = true;
 		}
 
-		var flag = !_data.lastKnownSensor.isPlayerVisible && _data.lastKnownSensor.isIlluminatedByPlayer && _numTimesIlluminatedByPlayer > 2;
-		if (_data.isPlayerLocationKnown)
+		var flag = !_data.lastKnownSensors[_data.InterestedPlayer].isPlayerVisible && _data.lastKnownSensors[_data.InterestedPlayer].isIlluminatedByPlayer && _numTimesIlluminatedByPlayer > 2;
+		if (_data.isPlayerLocationKnown[_data.InterestedPlayer])
 		{
 			_sawPlayerOccluded = false;
 			_movingToSearchLocation = false;
@@ -133,23 +133,23 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 			_searchNodesNearTarget = false;
 			_searchNodesComplete = false;
 		}
-		else if (!_movingToSearchLocation && (_data.lostPlayerDueToOcclusion || flag))
+		else if (!_movingToSearchLocation && (_data.LostPlayerDueToOcclusion(_data.InterestedPlayer) || flag))
 		{
 			_movingToSearchLocation = true;
-			_sawPlayerOccluded = _data.lostPlayerDueToOcclusion;
+			_sawPlayerOccluded = _data.LostPlayerDueToOcclusion(_data.InterestedPlayer);
 			_controller.ChangeLanternFocus(0f, 2f);
 			_controller.SetLanternConcealed(true, true);
 			if (_allowFocusBeam)
 			{
 				_searchNodesNearTarget = true;
 				_searchStartPosition = _controller.GetLocalFeetPosition();
-				_searchNode = _controller.GetNodeMap().FindClosestNode(_data.lastKnownPlayerLocation.localPosition);
+				_searchNode = _controller.GetNodeMap().FindClosestNode(_data.lastKnownPlayerLocation[_data.InterestedPlayer].localPosition);
 				_controller.PathfindToLocalPosition(_searchNode.localPosition, MoveType.INVESTIGATE);
 			}
 			else
 			{
 				_searchNodesNearTarget = false;
-				_controller.PathfindToLocalPosition(_data.lastKnownPlayerLocation.localPosition, MoveType.INVESTIGATE);
+				_controller.PathfindToLocalPosition(_data.lastKnownPlayerLocation[_data.InterestedPlayer].localPosition, MoveType.INVESTIGATE);
 			}
 
 			_controller.FaceVelocity();
@@ -175,44 +175,44 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 		}
 		else
 		{
-			var playerLocationToCheck = _data.lastKnownPlayerLocation.localPosition + new Vector3(0f, 1.8f, 0f);
+			var playerLocationToCheck = _data.lastKnownPlayerLocation[_data.InterestedPlayer].localPosition + new Vector3(0f, 1.8f, 0f);
 			var canSeePlayerCheckLocation = _sensors.AttachedObject.CheckPositionOccluded(_controller.LocalToWorldPosition(playerLocationToCheck));
 			var lanternRange = _allowFocusBeam
 				? (_controller.GetFocusedLanternRange() - 3f)
 				: (_controller.GetUnfocusedLanternRange() - 1f);
-			var isLastKnownLocationInRange = _data.lastKnownPlayerLocation.distance < _controller.GetUnfocusedLanternRange();
-			if (_data.sensor.isPlayerIlluminatedByUs)
+			var isLastKnownLocationInRange = _data.lastKnownPlayerLocation[_data.InterestedPlayer].distance < _controller.GetUnfocusedLanternRange();
+			if (_data.sensors[_data.InterestedPlayer].isPlayerIlluminatedByUs)
 			{
 				_allowFocusBeam = true;
-				_controller.FaceLocalPosition(_data.lastKnownPlayerLocation.localPosition, TurnSpeed.MEDIUM);
+				_controller.FaceLocalPosition(_data.lastKnownPlayerLocation[_data.InterestedPlayer].localPosition, TurnSpeed.MEDIUM);
 				if (isLastKnownLocationInRange == _controller.IsLanternFocused())
 				{
 					_controller.ChangeLanternFocus(isLastKnownLocationInRange ? 0f : 1f, 2f);
 					return;
 				}
 			}
-			else if (_data.lastKnownPlayerLocation.distance < lanternRange && !canSeePlayerCheckLocation)
+			else if (_data.lastKnownPlayerLocation[_data.InterestedPlayer].distance < lanternRange && !canSeePlayerCheckLocation)
 			{
-				if (_allowFocusBeam || !_data.isPlayerLocationKnown)
+				if (_allowFocusBeam || !_data.isPlayerLocationKnown[_data.InterestedPlayer])
 				{
 					_controller.StopMoving();
 				}
 
-				if (_data.lastKnownPlayerLocation.degreesToPositionXZ < 5f && (isLastKnownLocationInRange || _controller.IsLanternFocused()))
+				if (_data.lastKnownPlayerLocation[_data.InterestedPlayer].degreesToPositionXZ < 5f && (isLastKnownLocationInRange || _controller.IsLanternFocused()))
 				{
 					_checkingTargetLocation = true;
 				}
 
 				if (isLastKnownLocationInRange)
 				{
-					_controller.FaceLocalPosition(_data.lastKnownPlayerLocation.localPosition, TurnSpeed.FASTEST);
+					_controller.FaceLocalPosition(_data.lastKnownPlayerLocation[_data.InterestedPlayer].localPosition, TurnSpeed.FASTEST);
 					_controller.SetLanternConcealed(false, true);
 					_controller.ChangeLanternFocus(0f, 2f);
 					return;
 				}
 
-				_controller.FaceLocalPosition(_data.lastKnownPlayerLocation.localPosition, TurnSpeed.MEDIUM);
-				if (_data.lastKnownPlayerLocation.degreesToPositionXZ < 5f)
+				_controller.FaceLocalPosition(_data.lastKnownPlayerLocation[_data.InterestedPlayer].localPosition, TurnSpeed.MEDIUM);
+				if (_data.lastKnownPlayerLocation[_data.InterestedPlayer].degreesToPositionXZ < 5f)
 				{
 					_controller.ChangeLanternFocus(1f, 2f);
 					return;
@@ -222,8 +222,8 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 			{
 				_controller.ChangeLanternFocus(0f, 2f);
 				_controller.SetLanternConcealed(true, true);
-				_controller.PathfindToLocalPosition(_data.lastKnownPlayerLocation.localPosition, MoveType.INVESTIGATE);
-				_controller.FaceLocalPosition(_data.lastKnownPlayerLocation.localPosition, TurnSpeed.MEDIUM);
+				_controller.PathfindToLocalPosition(_data.lastKnownPlayerLocation[_data.InterestedPlayer].localPosition, MoveType.INVESTIGATE);
+				_controller.FaceLocalPosition(_data.lastKnownPlayerLocation[_data.InterestedPlayer].localPosition, TurnSpeed.MEDIUM);
 			}
 		}
 	}
@@ -248,7 +248,7 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 			{
 				if (_sawPlayerOccluded)
 				{
-					_searchPosition = _data.lastKnownPlayerLocation.localPosition + _data.lastKnownPlayerLocation.localVelocity;
+					_searchPosition = _data.lastKnownPlayerLocation[_data.InterestedPlayer].localPosition + _data.lastKnownPlayerLocation[_data.InterestedPlayer].localVelocity;
 					_controller.FaceLocalPosition(_searchPosition, TurnSpeed.MEDIUM);
 					return;
 				}

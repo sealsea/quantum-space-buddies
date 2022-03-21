@@ -23,8 +23,8 @@ internal class QSBChaseAction : QSBGhostAction
 		{
 			return -100f;
 		}
-		bool flag = this._data.sensor.isPlayerVisible || this._data.sensor.isPlayerHeldLanternVisible || this._data.sensor.inContactWithPlayer;
-		if ((this._running && this._data.timeSincePlayerLocationKnown < 5f) || (flag && this._data.playerLocation.distance < this._data.playerMinLanternRange + 0.5f))
+		bool flag = this._data.sensors[_data.InterestedPlayer].isPlayerVisible || this._data.sensors[_data.InterestedPlayer].isPlayerHeldLanternVisible || this._data.sensors[_data.InterestedPlayer].inContactWithPlayer;
+		if ((this._running && this._data.timeSincePlayerLocationKnown[_data.InterestedPlayer] < 5f) || (flag && this._data.playerLocation[_data.InterestedPlayer].distance < this._data.playerMinLanternRange + 0.5f))
 		{
 			return 95f;
 		}
@@ -44,12 +44,12 @@ internal class QSBChaseAction : QSBGhostAction
 
 	public override bool Update_Action()
 	{
-		if (this._data.playerLocation.distance > 10f && !this._controller.GetNodeMap().CheckLocalPointInBounds(this._data.lastKnownPlayerLocation.localPosition))
+		if (this._data.playerLocation[_data.InterestedPlayer].distance > 10f && !this._controller.GetNodeMap().CheckLocalPointInBounds(this._data.lastKnownPlayerLocation[_data.InterestedPlayer].localPosition))
 		{
 			return false;
 		}
-		this._controller.PathfindToLocalPosition(this._data.lastKnownPlayerLocation.localPosition, MoveType.CHASE);
-		this._controller.FaceLocalPosition(this._data.lastKnownPlayerLocation.localPosition, TurnSpeed.FAST);
+		this._controller.PathfindToLocalPosition(this._data.lastKnownPlayerLocation[_data.InterestedPlayer].localPosition, MoveType.CHASE);
+		this._controller.FaceLocalPosition(this._data.lastKnownPlayerLocation[_data.InterestedPlayer].localPosition, TurnSpeed.FAST);
 		return true;
 	}
 }

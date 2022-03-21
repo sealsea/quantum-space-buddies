@@ -20,7 +20,7 @@ public class QSBStalkAction : QSBGhostAction
 			return -100f;
 		}
 
-		if ((_running && _data.timeSincePlayerLocationKnown < 4f) || _data.isPlayerLocationKnown)
+		if ((_running && _data.timeSincePlayerLocationKnown[_data.InterestedPlayer] < 4f) || _data.isPlayerLocationKnown[_data.InterestedPlayer])
 		{
 			return 85f;
 		}
@@ -62,17 +62,17 @@ public class QSBStalkAction : QSBGhostAction
 			stalkSpeed += 1.5f;
 		}
 
-		if (_controller.GetNodeMap().CheckLocalPointInBounds(_data.lastKnownPlayerLocation.localPosition))
+		if (_controller.GetNodeMap().CheckLocalPointInBounds(_data.lastKnownPlayerLocation[_data.InterestedPlayer].localPosition))
 		{
-			_controller.PathfindToLocalPosition(_data.lastKnownPlayerLocation.localPosition, stalkSpeed, GhostConstants.GetMoveAcceleration(MoveType.SEARCH));
+			_controller.PathfindToLocalPosition(_data.lastKnownPlayerLocation[_data.InterestedPlayer].localPosition, stalkSpeed, GhostConstants.GetMoveAcceleration(MoveType.SEARCH));
 		}
 
-		_controller.FaceLocalPosition(_data.lastKnownPlayerLocation.localPosition, TurnSpeed.MEDIUM);
+		_controller.FaceLocalPosition(_data.lastKnownPlayerLocation[_data.InterestedPlayer].localPosition, TurnSpeed.MEDIUM);
 
 		var isPlayerLanternConcealed = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController().IsConcealed();
 		var sawPlayerLanternConceal = !_wasPlayerLanternConcealed
 			&& isPlayerLanternConcealed
-			&& _data.wasPlayerLocationKnown;
+			&& _data.wasPlayerLocationKnown[_data.InterestedPlayer];
 
 		_wasPlayerLanternConcealed = isPlayerLanternConcealed;
 		if (sawPlayerLanternConceal && !_shouldFocusLightOnPlayer)
@@ -80,7 +80,7 @@ public class QSBStalkAction : QSBGhostAction
 			_shouldFocusLightOnPlayer = true;
 			_changeFocusTime = Time.time + 1f;
 		}
-		else if (_data.sensor.isPlayerHeldLanternVisible && _shouldFocusLightOnPlayer)
+		else if (_data.sensors[_data.InterestedPlayer].isPlayerHeldLanternVisible && _shouldFocusLightOnPlayer)
 		{
 			_shouldFocusLightOnPlayer = false;
 			_changeFocusTime = Time.time + 1f;

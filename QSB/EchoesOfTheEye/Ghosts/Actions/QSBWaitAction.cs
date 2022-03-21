@@ -17,7 +17,7 @@ public class QSBWaitAction : QSBGhostAction
 
 	public override float CalculateUtility()
 	{
-		if (PlayerState.IsGrabbedByGhost() && (this._running || this._data.timeSincePlayerLocationKnown < 4f))
+		if (PlayerState.IsGrabbedByGhost() && (this._running || this._data.timeSincePlayerLocationKnown[_data.InterestedPlayer] < 4f))
 		{
 			return 666f;
 		}
@@ -34,9 +34,9 @@ public class QSBWaitAction : QSBGhostAction
 		}
 		this._effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
 		this._controller.FacePlayer(TurnSpeed.MEDIUM);
-		if (this._data.playerLocation.distanceXZ < 3f)
+		if (this._data.playerLocation[_data.InterestedPlayer].distanceXZ < 3f)
 		{
-			Vector3 toPositionXZ = this._data.playerLocation.toPositionXZ;
+			Vector3 toPositionXZ = this._data.playerLocation[_data.InterestedPlayer].toPositionXZ;
 			this._controller.MoveToLocalPosition(this._controller.GetLocalFeetPosition() - toPositionXZ * 3f, MoveType.SEARCH);
 			return;
 		}
