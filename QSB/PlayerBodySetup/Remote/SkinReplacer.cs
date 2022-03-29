@@ -74,6 +74,7 @@ namespace QSB.PlayerBodySetup.Remote
                     bone.parent = newParent;
                     bone.localPosition = Vector3.zero;
                     bone.localRotation = Quaternion.identity;
+                    bone.localScale = Vector3.one * 10f;
                 }
 
                 skinnedMeshRenderer.rootBone = SearchInChildren(original.transform.parent, playerPrefix + "Trajectory" + playerSuffix);
