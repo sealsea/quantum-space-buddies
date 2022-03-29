@@ -45,7 +45,6 @@ namespace QSB.PlayerBodySetup.Remote
         {
             var newModel = GameObject.Instantiate(toCopy, original.transform.parent.transform);
             newModel.transform.localPosition = Vector3.zero;
-            newModel.transform.localScale = Vector3.one * 0.03f;
             newModel.SetActive(true);
 
             // Disappear existing mesh renderers
