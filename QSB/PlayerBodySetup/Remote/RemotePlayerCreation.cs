@@ -100,8 +100,8 @@ public static class RemotePlayerCreation
 		 * ADD SKIN
 		 */
 
-		var noSuit = REMOTE_Player_Body.transform.Find("player_mesh_noSuit:Traveller_HEA_Player").gameObject;
-		var suit = REMOTE_Player_Body.transform.Find("Traveller_Mesh_v01:Traveller_Geo").gameObject;
+		var noSuit = REMOTE_Traveller_HEA_Player_v2.transform.Find("player_mesh_noSuit:Traveller_HEA_Player").gameObject;
+		var suit = REMOTE_Traveller_HEA_Player_v2.transform.Find("Traveller_Mesh_v01:Traveller_Geo").gameObject;
 
 		SkinReplacer.ReplaceSkin(suit, "Chert");
 
