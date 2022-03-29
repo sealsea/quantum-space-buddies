@@ -104,6 +104,7 @@ public static class RemotePlayerCreation
 		var suit = REMOTE_Traveller_HEA_Player_v2.transform.Find("Traveller_Mesh_v01:Traveller_Geo").gameObject;
 
 		SkinReplacer.ReplaceSkin(suit, "Chert");
+		SkinReplacer.ReplaceSkin(noSuit, "Riebeck");
 
 		return REMOTE_Player_Body.transform;
 	}
