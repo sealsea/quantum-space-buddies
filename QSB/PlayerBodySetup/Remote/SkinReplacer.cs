@@ -106,8 +106,6 @@ namespace QSB.PlayerBodySetup.Remote
             ShaderReplacer.ReplaceShaders(prefab);
             QSBDopplerFixer.AddDopplerFixers(prefab);
 
-            _skins.Add(name, prefab);
-
             return prefab;
         }
     }
