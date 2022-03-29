@@ -96,6 +96,15 @@ public static class RemotePlayerCreation
 		visibleStickPivot = REMOTE_Stick_Pivot;
 		visibleStickTip = REMOTE_Stick_Pivot.Find("REMOTE_Stick_Tip");
 
+		/*
+		 * ADD SKIN
+		 */
+
+		var noSuit = REMOTE_Player_Body.transform.Find("player_mesh_noSuit:Traveller_HEA_Player").gameObject;
+		var suit = REMOTE_Player_Body.transform.Find("Traveller_Mesh_v01:Traveller_Geo").gameObject;
+
+		SkinReplacer.ReplaceSkin(suit, "Chert");
+
 		return REMOTE_Player_Body.transform;
 	}
 }
