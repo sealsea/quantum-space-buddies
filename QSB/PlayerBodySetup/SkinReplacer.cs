@@ -16,10 +16,9 @@ namespace QSB.PlayerBodySetup
 
         private static readonly Dictionary<string, GameObject> _skins = new Dictionary<string, GameObject>()
         {
-            { "Chert", LoadPrefab("Chert") },
+            { "Chert", LoreadPrefab("Chert") },
             { "Gabbro", LoadPrefab("Gabbro") },
             { "Feldspar", LoadPrefab("Feldspar") },
-            { "Riebeck", LoadPrefab("Riebeck") },
         };
 
         private static readonly Dictionary<string, Func<string, string>> _boneMaps = new Dictionary<string, Func<string, string>>()
@@ -27,81 +26,6 @@ namespace QSB.PlayerBodySetup
             { "Chert", (name) => name.Replace("Chert_Skin_02:Child_Rig_V01:", playerPrefix) },
             { "Gabbro", (name) => name.Replace("gabbro_OW_V02:gabbro_rig_v01:", playerPrefix) },
             { "Feldspar", (name) => name.Replace("Feldspar_Skin:Short_Rig_V01:", playerPrefix) },
-            { "Riebeck", (name) =>
-                {
-                    if(name.Contains("jt_l_Hand")) return "Traveller_Rig_v01:Traveller_LF_Arm_Wrist_Jnt";
-                    if(name.Contains("jt_r_Hand")) return "Traveller_Rig_v01:Traveller_RT_Arm_Wrist_Jnt";
-
-                    switch (name)
-                    {
-                        case "Riebeck_Rig2:jt_MAINSHJ":
-                        case "Riebeck_Rig2:jt_ZERO":
-                            return "Traveller_Rig_v01:Traveller_Trajectory_Jnt";
-                        case "Riebeck_Rig2:jt_ROOTSHJ":
-                            return "Traveller_Rig_v01:Traveller_ROOT_Jnt";
-                        // Left Leg
-                        case "Riebeck_Rig2:jt_l_Leg_HipSHJ":
-                            return "Traveller_Rig_v01:Traveller_LF_Leg_Hip_Jnt";
-                        case "Riebeck_Rig2:jt_l_Leg_KneeSHJ":
-                            return "Traveller_Rig_v01:Traveller_LF_Leg_Knee_Jnt";
-                        case "Riebeck_Rig2:jt_l_Leg_AnkleSHJ":
-                            return "Traveller_Rig_v01:Traveller_LF_Leg_Ankle_Jnt";
-                        case "Riebeck_Rig2:jt_l_Leg_BallSHJ":
-                            return "Traveller_Rig_v01:Traveller_LF_Leg_Ball_Jnt";
-                        case "Riebeck_Rig2:jt_l_Leg_ToeSHJ":
-                            return "Traveller_Rig_v01:Traveller_LF_Leg_Toe_Jnt";
-
-                        // Right leg
-                        case "Riebeck_Rig2:jt_r_Leg_HipSHJ":
-                            return "Traveller_Rig_v01:Traveller_RT_Leg_Hip_Jnt";
-                        case "Riebeck_Rig2:jt_r_Leg_KneeSHJ":
-                            return "Traveller_Rig_v01:Traveller_RT_Leg_Knee_Jnt";
-                        case "Riebeck_Rig2:jt_r_Leg_AnkleSHJ":
-                            return "Traveller_Rig_v01:Traveller_RT_Leg_Ankle_Jnt";
-                        case "Riebeck_Rig2:jt_r_Leg_BallSHJ":
-                            return "Traveller_Rig_v01:Traveller_RT_Leg_Ball_Jnt";
-                        case "Riebeck_Rig2:jt_r_Leg_ToeSHJ":
-                            return "Traveller_Rig_v01:Traveller_RT_Leg_Toe_Jnt";
-
-                        // Spine
-                        case "Riebeck_Rig2:jt_Spine_01SHJ":
-                            return "Traveller_Rig_v01:Traveller_Spine_01_Jnt";
-                        case "Riebeck_Rig2:jt_Spine_02SHJ":
-                            return "Traveller_Rig_v01:Traveller_Spine_02_Jnt";
-                        case "Riebeck_Rig2:jt_Spine_TopSHJ":
-                            return "Traveller_Rig_v01:Traveller_Spine_Top_Jnt";
-
-                        // Head
-                        case "Riebeck_Rig2:jt_Neck_01SHJ":
-                            return "Traveller_Rig_v01:Traveller_Neck_01_Jnt";
-                        case "Riebeck_Rig2:jt_Neck_TopSHJ":
-                            return "Traveller_Rig_v01:Traveller_Neck_Top_Jnt";
-
-                        // Left arm
-                        case "Riebeck_Rig2:jt_l_Arm_ClavicleSHJ":
-                            return "Traveller_Rig_v01:Traveller_LF_Arm_Clavicle_Jnt";
-                        case "Riebeck_Rig2:jt_l_Arm_ShoulderSHJ":
-                            return "Traveller_Rig_v01:Traveller_LF_Arm_Shoulder_Jnt";
-                        case "Riebeck_Rig2:jt_l_Arm_ElbowSHJ":
-                            return "Traveller_Rig_v01:Traveller_LF_Arm_Elbow_Jnt";
-                        case "Riebeck_Rig2:jt_l_Arm_WristSHJ":
-                            return "Traveller_Rig_v01:Traveller_LF_Arm_Wrist_Jnt";
-
-                        // Right arm
-                        case "Riebeck_Rig2:jt_r_Arm_ClavicleSHJ":
-                            return "Traveller_Rig_v01:Traveller_RT_Arm_Clavicle_Jnt";
-                        case "Riebeck_Rig2:jt_r_Arm_ShoulderSHJ":
-                            return "Traveller_Rig_v01:Traveller_RT_Arm_Shoulder_Jnt";
-                        case "Riebeck_Rig2:jt_r_Arm_ElbowSHJ":
-                            return "Traveller_Rig_v01:Traveller_RT_Arm_Elbow_Jnt";
-                        case "Riebeck_Rig2:jt_r_Arm_WristSHJ":
-                            return "Traveller_Rig_v01:Traveller_RT_Arm_Wrist_Jnt";
-
-                        default:
-                            return "Traveller_Rig_v01:Traveller_Trajectory_Jnt";
-                    }
-                }
-            },
         };
 
         public static void ReplaceSkin(GameObject playerBody, string skinName)
