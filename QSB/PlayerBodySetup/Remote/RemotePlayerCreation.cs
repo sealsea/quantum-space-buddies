@@ -103,7 +103,7 @@ public static class RemotePlayerCreation
 		var noSuit = REMOTE_Traveller_HEA_Player_v2.transform.Find("player_mesh_noSuit:Traveller_HEA_Player").gameObject;
 		var suit = REMOTE_Traveller_HEA_Player_v2.transform.Find("Traveller_Mesh_v01:Traveller_Geo").gameObject;
 
-		SkinReplacer.ReplaceSkin(suit, "Feldspar");
+		SkinReplacer.ReplaceSkin(suit, "Gabbro");
 
 		return REMOTE_Player_Body.transform;
 	}

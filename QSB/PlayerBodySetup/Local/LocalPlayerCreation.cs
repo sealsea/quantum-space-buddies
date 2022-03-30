@@ -54,8 +54,7 @@ public static class LocalPlayerCreation
 		var noSuit = playerModel.transform.Find("player_mesh_noSuit:Traveller_HEA_Player").gameObject;
 		var suit = playerModel.transform.Find("Traveller_Mesh_v01:Traveller_Geo").gameObject;
 
-		SkinReplacer.ReplaceSkin(suit, "Gabbro");
-		//SkinReplacer.ReplaceSkin(noSuit, "Feldspar");
+		SkinReplacer.ReplaceSkin(suit, "Feldspar");
 
 		return playerBody;
 	}
