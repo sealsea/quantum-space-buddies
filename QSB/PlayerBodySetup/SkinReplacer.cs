@@ -1,4 +1,5 @@
-﻿using QSB.Utility;
+﻿using QSB.PlayerBodySetup.Remote;
+using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,23 +7,27 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace QSB.PlayerBodySetup.Remote
+namespace QSB.PlayerBodySetup
 {
     public static class SkinReplacer
     {
         private static string playerPrefix = "Traveller_Rig_v01:Traveller_";
         private static string playerSuffix = "_Jnt";
 
-        private static Dictionary<string, GameObject> _skins = new Dictionary<string, GameObject>()
+        private static readonly Dictionary<string, GameObject> _skins = new Dictionary<string, GameObject>()
         {
             { "Chert", LoadPrefab("Chert") },
-            { "Riebeck", LoadPrefab("Riebeck") }
+            { "Gabbro", LoadPrefab("Gabbro") },
+            { "Feldspar", LoadPrefab("Feldspar") },
+            { "Riebeck", LoadPrefab("Riebeck") },
         };
 
-        private static Dictionary<string, Func<string, string>> _boneMaps = new Dictionary<string, Func<string, string>>()
+        private static readonly Dictionary<string, Func<string, string>> _boneMaps = new Dictionary<string, Func<string, string>>()
         {
             { "Chert", (name) => name.Replace("Chert_Skin_02:Child_Rig_V01:", playerPrefix) },
-            { "Riebeck", (name) => 
+            { "Gabbro", (name) => name.Replace("gabbro_OW_V02:gabbro_rig_v01:", playerPrefix) },
+            { "Feldspar", (name) => name.Replace("Feldspar_Skin:Short_Rig_V01:", playerPrefix) },
+            { "Riebeck", (name) =>
                 {
                     if(name.Contains("jt_l_Hand")) return "Traveller_Rig_v01:Traveller_LF_Arm_Wrist_Jnt";
                     if(name.Contains("jt_r_Hand")) return "Traveller_Rig_v01:Traveller_RT_Arm_Wrist_Jnt";
@@ -32,7 +37,7 @@ namespace QSB.PlayerBodySetup.Remote
                         case "Riebeck_Rig2:jt_MAINSHJ":
                         case "Riebeck_Rig2:jt_ZERO":
                             return "Traveller_Rig_v01:Traveller_Trajectory_Jnt";
-                        case "Riebeck_Rig2:jt_ROOTSHJ": 
+                        case "Riebeck_Rig2:jt_ROOTSHJ":
                             return "Traveller_Rig_v01:Traveller_ROOT_Jnt";
                         // Left Leg
                         case "Riebeck_Rig2:jt_l_Leg_HipSHJ":
@@ -96,20 +101,21 @@ namespace QSB.PlayerBodySetup.Remote
                             return "Traveller_Rig_v01:Traveller_Trajectory_Jnt";
                     }
                 }
-            }
+            },
         };
 
         public static void ReplaceSkin(GameObject playerBody, string skinName)
         {
-            var skin = _skins[skinName];
-            var map = _boneMaps[skinName];
+            var skin = _skins.GetValueOrDefault(skinName);
+            var map = _boneMaps.GetValueOrDefault(skinName);
 
-            if (skin == null || map == null)
+            if (skin == default || map == default)
             {
                 DebugLog.DebugWrite($"SKIN [{skinName}] WASN'T FOUND");
                 return;
             }
 
+            DebugLog.DebugWrite($"Swapping player mesh to {skinName} using {skin}, {map}");
             Swap(playerBody, skin, map);
         }
 
@@ -146,13 +152,22 @@ namespace QSB.PlayerBodySetup.Remote
                 {
                     // Reparent the bone to the player skeleton
                     var bone = bones[i];
-                    var newParent = SearchInChildren(original.transform.parent, boneMap(bone.name));
-                    bone.parent = newParent;
-                    bone.localPosition = Vector3.zero;
-                    bone.localRotation = Quaternion.identity;
+                    string matchingBone = boneMap(bone?.name);
+                    var newParent = SearchInChildren(original.transform.parent, matchingBone);
+                    if (newParent == null)
+                    {
+                        // This should never happen in a release, this is just for testing with new models
+                        DebugLog.DebugWrite($"Couldn't find bone [{matchingBone}] matching [{bone}]", OWML.Common.MessageType.Error);
+                    }
+                    else
+                    {
+                        bone.parent = newParent;
+                        bone.localPosition = Vector3.zero;
+                        bone.localRotation = Quaternion.identity;
 
-                    // Because the Remote Player is scaled by 0.1f for some reason so we have to offset this
-                    bone.localScale = Vector3.one * 10f;
+                        // Because the Remote Player is scaled by 0.1f for some reason so we have to offset this
+                        bone.localScale = Vector3.one * 10f;
+                    }
                 }
 
                 skinnedMeshRenderer.rootBone = SearchInChildren(original.transform.parent, playerPrefix + "Trajectory" + playerSuffix);
