@@ -4,7 +4,6 @@ using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.ShipSync.TransformSync;
-using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
@@ -41,112 +40,15 @@ public class DeathPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(PlayerResources), nameof(PlayerResources.OnImpact))]
-	public static bool PlayerResources_OnImpact(PlayerResources __instance, ImpactData impact)
-	{
-		if (PlayerState.IsInsideShip())
-		{
-			return false;
-		}
-
-		var speed = Mathf.Clamp01((impact.speed - __instance.GetMinImpactSpeed()) / (__instance.GetMaxImpactSpeed() - __instance.GetMinImpactSpeed()));
-		var tookDamage = __instance.ApplyInstantDamage(100f * speed, InstantDamageType.Impact);
-		if (tookDamage && __instance._currentHealth <= 0f && !PlayerState.IsDead())
-		{
-			Locator.GetDeathManager().SetImpactDeathSpeed(impact.speed);
-			Locator.GetDeathManager().KillPlayer(DeathType.Impact);
-		}
-
-		return false;
-	}
+	public static bool PlayerResources_OnImpact(PlayerResources __instance, ImpactData impact) =>
+		// don't take damage from impact in ship
+		!PlayerState.IsInsideShip();
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(HighSpeedImpactSensor), nameof(HighSpeedImpactSensor.FixedUpdate))]
-	public static bool HighSpeedImpactSensor_FixedUpdate(
-		HighSpeedImpactSensor __instance
-	)
-	{
-		if (__instance._isPlayer && (PlayerState.IsAttached() || PlayerState.IsInsideShuttle() || PlayerState.UsingNomaiRemoteCamera()))
-		{
-			return false;
-		}
-
-		if (__instance._dieNextUpdate && !__instance._dead)
-		{
-			__instance._dead = true;
-			__instance._dieNextUpdate = false;
-			if (__instance.gameObject.CompareTag("Player"))
-			{
-				Locator.GetDeathManager().SetImpactDeathSpeed(__instance._impactSpeed);
-				Locator.GetDeathManager().KillPlayer(DeathType.Impact);
-			}
-			else if (__instance.gameObject.CompareTag("Ship"))
-			{
-				__instance.GetComponent<ShipDamageController>().Explode();
-			}
-		}
-
-		if (__instance._isPlayer && PlayerState.IsInsideShip())
-		{
-			var shipCenter = Locator.GetShipTransform().position + (Locator.GetShipTransform().up * 2f);
-			var distanceFromShip = Vector3.Distance(__instance._body.GetPosition(), shipCenter);
-			if (distanceFromShip > 8f)
-			{
-				__instance._body.SetPosition(shipCenter);
-			}
-
-			if (!__instance._dead)
-			{
-				var a = __instance._body.GetVelocity() - Locator.GetShipBody().GetPointVelocity(__instance._body.GetPosition());
-				if (a.sqrMagnitude > __instance._sqrCheckSpeedThreshold)
-				{
-					__instance._impactSpeed = a.magnitude;
-					__instance._body.AddVelocityChange(-a);
-				}
-			}
-
-			return false;
-		}
-
-		var passiveReferenceFrame = __instance._sectorDetector.GetPassiveReferenceFrame();
-		if (!__instance._dead && passiveReferenceFrame != null)
-		{
-			var relativeVelocity = __instance._body.GetVelocity() - passiveReferenceFrame.GetOWRigidBody().GetPointVelocity(__instance._body.GetPosition());
-			if (relativeVelocity.sqrMagnitude > __instance._sqrCheckSpeedThreshold)
-			{
-				var hitCount = Physics.RaycastNonAlloc(__instance.transform.TransformPoint(__instance._localOffset), relativeVelocity, __instance._raycastHits, (relativeVelocity.magnitude * Time.deltaTime) + __instance._radius, OWLayerMask.physicalMask, QueryTriggerInteraction.Ignore);
-				for (var i = 0; i < hitCount; i++)
-				{
-					if (__instance._raycastHits[i].rigidbody.mass > 10f && !__instance._raycastHits[i].rigidbody.Equals(__instance._body.GetRigidbody()))
-					{
-						var owRigidbody = __instance._raycastHits[i].rigidbody.GetComponent<OWRigidbody>();
-						if (owRigidbody == null)
-						{
-							DebugLog.ToConsole("Rigidbody does not have attached OWRigidbody!!!", OWML.Common.MessageType.Error);
-							Debug.Break();
-						}
-						else
-						{
-							relativeVelocity = __instance._body.GetVelocity() - owRigidbody.GetPointVelocity(__instance._body.GetPosition());
-							var a2 = Vector3.Project(relativeVelocity, __instance._raycastHits[i].normal);
-							if (a2.sqrMagnitude > __instance._sqrCheckSpeedThreshold)
-							{
-								__instance._body.AddVelocityChange(-a2);
-								__instance._impactSpeed = a2.magnitude;
-								if (!PlayerState.IsInsideTheEye())
-								{
-									__instance._dieNextUpdate = true;
-								}
-
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return false;
-	}
+	public static bool HighSpeedImpactSensor_FixedUpdate(HighSpeedImpactSensor __instance) =>
+		// don't insta-die from impact in ship
+		!PlayerState.IsInsideShip();
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
@@ -273,10 +175,12 @@ public class DeathPatches : QSBPatch
 		}
 	}
 
-	[HarmonyPostfix]
-	[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.Awake))]
-	public static void ShipDamageController_Awake(ShipDamageController __instance)
-		=> __instance._exploded = true;
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.Explode))]
+	public static bool ShipDamageController_Explode()
+		// prevent ship from exploding
+		// todo remove this when sync ship explosions
+		=> false;
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DestructionVolume), nameof(DestructionVolume.VanishShip))]
@@ -287,6 +191,7 @@ public class DeathPatches : QSBPatch
 			return true;
 		}
 
+		// apparently this is to fix a weird bug when flying into the sun. idk this is 2-year-old code.
 		if (!ShipTransformSync.LocalInstance.hasAuthority)
 		{
 			return false;
@@ -296,6 +201,8 @@ public class DeathPatches : QSBPatch
 		{
 			Locator.GetDeathManager().KillPlayer(__instance._deathType);
 		}
+
+		// don't actually delete the ship to allow respawns or something
 
 		return true;
 	}

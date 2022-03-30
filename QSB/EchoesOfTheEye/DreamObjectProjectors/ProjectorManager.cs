@@ -1,18 +1,15 @@
 ﻿using Cysharp.Threading.Tasks;
-using QSB.EchoesOfTheEye.DreamRafts.WorldObjects;
+using QSB.EchoesOfTheEye.DreamObjectProjectors.WorldObject;
 using QSB.WorldSync;
 using System.Threading;
 
-namespace QSB.EchoesOfTheEye.DreamRafts;
+namespace QSB.EchoesOfTheEye.DreamObjectProjectors;
 
-public class DreamRaftManager : WorldObjectManager
+internal class ProjectorManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 	public override bool DlcOnly => true;
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
-	{
-		QSBWorldSync.Init<QSBDreamRaft, DreamRaftController>();
-		QSBWorldSync.Init<QSBSealRaft, SealRaftController>();
-	}
+		=> QSBWorldSync.Init<QSBDreamObjectProjector, DreamObjectProjector>();
 }
