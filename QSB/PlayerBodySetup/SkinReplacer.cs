@@ -16,7 +16,7 @@ namespace QSB.PlayerBodySetup
 
         private static readonly Dictionary<string, GameObject> _skins = new Dictionary<string, GameObject>()
         {
-            { "Chert", LoreadPrefab("Chert") },
+            { "Chert", LoadPrefab("Chert") },
             { "Gabbro", LoadPrefab("Gabbro") },
             { "Feldspar", LoadPrefab("Feldspar") },
         };
