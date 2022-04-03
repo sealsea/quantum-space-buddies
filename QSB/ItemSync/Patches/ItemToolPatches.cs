@@ -1,11 +1,9 @@
 ﻿using HarmonyLib;
-using OWML.Common;
 using QSB.ItemSync.Messages;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -57,20 +55,20 @@ internal class ItemToolPatches : QSBPatch
 	public static bool DropItem(ItemTool __instance, RaycastHit hit, OWRigidbody targetRigidbody, IItemDropTarget customDropTarget)
 	{
 		Locator.GetPlayerAudioController().PlayDropItem(__instance._heldItem.GetItemType());
-		var hitGameObject = hit.collider.gameObject;
-		var gameObject2 = hitGameObject;
-		var sectorGroup = gameObject2.GetComponent<ISectorGroup>();
+		var gameObject = hit.collider.gameObject;
+		var component = gameObject.GetComponent<ISectorGroup>();
 		Sector sector = null;
-		while (sectorGroup == null && gameObject2.transform.parent != null)
+
+		while (component == null && gameObject.transform.parent != null)
 		{
-			gameObject2 = gameObject2.transform.parent.gameObject;
-			sectorGroup = gameObject2.GetComponent<ISectorGroup>();
+			gameObject = gameObject.transform.parent.gameObject;
+			component = gameObject.GetComponent<ISectorGroup>();
 		}
 
-		if (sectorGroup != null)
+		if (component != null)
 		{
-			sector = sectorGroup.GetSector();
-			if (sector == null && sectorGroup is SectorCullGroup sectorCullGroup)
+			sector = component.GetSector();
+			if (sector == null && component is SectorCullGroup sectorCullGroup)
 			{
 				var controllingProxy = sectorCullGroup.GetControllingProxy();
 				if (controllingProxy != null)
@@ -85,18 +83,14 @@ internal class ItemToolPatches : QSBPatch
 			: customDropTarget.GetItemDropTargetTransform(hit.collider.gameObject);
 		var qsbItem = __instance._heldItem.GetWorldObject<IQSBItem>();
 		__instance._heldItem.DropItem(hit.point, hit.normal, parent, sector, customDropTarget);
+		customDropTarget?.AddDroppedItem(hit.collider.gameObject, __instance._heldItem);
+
 		__instance._heldItem = null;
 		QSBPlayerManager.LocalPlayer.HeldItem = null;
+
 		Locator.GetToolModeSwapper().UnequipTool();
-		var parentSector = parent.GetComponentInChildren<Sector>();
-		if (parentSector != null)
-		{
-			qsbItem.SendMessage(new DropItemMessage(hit.point, hit.normal, parentSector));
-		}
-		else
-		{
-			DebugLog.ToConsole($"Error - No sector found for rigidbody {targetRigidbody.name}!.", MessageType.Error);
-		}
+
+		qsbItem.SendMessage(new DropItemMessage(hit.point, hit.normal, parent, sector, customDropTarget, targetRigidbody));
 
 		return false;
 	}

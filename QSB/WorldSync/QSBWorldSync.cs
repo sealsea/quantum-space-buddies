@@ -304,7 +304,11 @@ public static class QSBWorldSync
 		where TUnityObject : MonoBehaviour
 	{
 		WorldObjects.Add(worldObject);
-		UnityObjectsToWorldObjects.Add(unityObject, worldObject);
+		if (!UnityObjectsToWorldObjects.TryAdd(unityObject, worldObject))
+		{
+			DebugLog.ToConsole($"Error - UnityObjectsToWorldObjects already contains \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
+			return;
+		}
 
 		var task = UniTask.Create(async () =>
 		{
