@@ -253,6 +253,20 @@ public static class QSBWorldSync
 		=> Resources.FindObjectsOfTypeAll<TUnityObject>()
 			.Where(x => x.gameObject.scene.name != null);
 
+	public static int InitSingle<TWorldObject, TUnityObject>(TUnityObject unityObject)
+		where TWorldObject : WorldObject<TUnityObject>, new()
+		where TUnityObject : MonoBehaviour
+	{
+		var id = WorldObjects.Count;
+		var obj = new TWorldObject
+		{
+			AttachedObject = unityObject,
+			ObjectId = id
+		};
+		AddAndInit(obj, unityObject);
+		return id;
+	}
+
 	public static void Init<TWorldObject, TUnityObject>()
 		where TWorldObject : WorldObject<TUnityObject>, new()
 		where TUnityObject : MonoBehaviour
