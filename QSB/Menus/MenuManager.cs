@@ -389,12 +389,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		ExistingNewCopyPopup.OnPopupConfirm3 += () =>
 		{
 			DebugLog.DebugWrite("Replacing multiplayer save with singleplayer save");
-			QSBCore.IsInMultiplayer = true;
 
 			if (QSBCore.IsStandalone)
 			{
-				var currentProfile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
-				QSBStandaloneProfileManager.SharedInstance.SaveGame(currentProfile.gameSave, null, null, null);
+				var currentProfile = StandaloneProfileManager.SharedInstance.currentProfile;
+				StandaloneProfileManager.SharedInstance.SaveGame(currentProfile.gameSave, null, null, null);
 			}
 			else
 			{
@@ -413,12 +412,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		NewCopyPopup.OnPopupConfirm2 += () =>
 		{
 			DebugLog.DebugWrite("Replacing multiplayer save with singleplayer save");
-			QSBCore.IsInMultiplayer = true;
 
 			if (QSBCore.IsStandalone)
 			{
-				var currentProfile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
-				QSBStandaloneProfileManager.SharedInstance.SaveGame(currentProfile.gameSave, null, null, null);
+				var currentProfile = StandaloneProfileManager.SharedInstance.currentProfile;
+				StandaloneProfileManager.SharedInstance.SaveGame(currentProfile.gameSave, null, null, null);
 			}
 			else
 			{
@@ -463,16 +461,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		QuitButton = FindObjectOfType<PauseMenuManager>()._exitToMainMenuAction.gameObject;
 
-		if (QSBCore.IsInMultiplayer)
-		{
-			SetButtonActive(DisconnectButton, true);
-			SetButtonActive(QuitButton, false);
-		}
-		else
-		{
-			SetButtonActive(DisconnectButton, false);
-			SetButtonActive(QuitButton, true);
-		}
+		SetButtonActive(DisconnectButton, true);
+		SetButtonActive(QuitButton, false);
 
 		var text = QSBCore.IsHost
 			? QSBLocalization.Current.PauseMenuStopHosting
@@ -571,7 +561,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		}
 		else
 		{
-			var profile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
+			var profile = StandaloneProfileManager.SharedInstance.currentProfile;
 			doesSingleplayerSaveExist = profile.gameSave.loopCount > 1;
 			doesMultiplayerSaveExist = profile.multiplayerGameSave.loopCount > 1;
 		}
@@ -605,8 +595,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void Host(bool newMultiplayerSave)
 	{
-		QSBCore.IsInMultiplayer = true;
-
 		if (newMultiplayerSave)
 		{
 			DebugLog.DebugWrite("Resetting game...");
@@ -617,7 +605,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			DebugLog.DebugWrite("Loading multiplayer game...");
 			if (QSBCore.IsStandalone)
 			{
-				var profile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
+				var profile = StandaloneProfileManager.SharedInstance.currentProfile;
 				PlayerData.Init(profile.multiplayerGameSave, profile.settingsSave, profile.graphicsSettings, profile.inputJSON);
 			}
 			else
@@ -662,12 +650,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void Connect()
 	{
-		QSBCore.IsInMultiplayer = true;
 		_intentionalDisconnect = false;
 
 		if (QSBCore.IsStandalone)
 		{
-			var profile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
+			var profile = StandaloneProfileManager.SharedInstance.currentProfile;
 			PlayerData.Init(profile.multiplayerGameSave, profile.settingsSave, profile.graphicsSettings, profile.inputJSON);
 		}
 		else
@@ -706,7 +693,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	public void OnKicked(string reason)
 	{
-		QSBCore.IsInMultiplayer = false;
 		_intentionalDisconnect = true;
 
 		PopupClose += _ =>
@@ -722,8 +708,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void OnDisconnected(string error)
 	{
-		QSBCore.IsInMultiplayer = false;
-
 		if (_intentionalDisconnect)
 		{
 			DebugLog.DebugWrite("intentional disconnect. dont show popup");

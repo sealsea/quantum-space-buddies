@@ -189,7 +189,7 @@ public static class QSBWorldSync
 			RemoveWorldObjects();
 		QSBSceneManager.OnPostSceneLoad += (_, loadScene) =>
 		{
-			if (QSBCore.IsInMultiplayer && loadScene.IsUniverseScene())
+			if (loadScene.IsUniverseScene())
 			{
 				// So objects have time to be deleted, made, whatever
 				// i.e. wait until Start has been called

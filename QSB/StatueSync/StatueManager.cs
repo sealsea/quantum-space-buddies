@@ -22,11 +22,6 @@ internal class StatueManager : MonoBehaviour, IAddComponentOnStart
 
 	private void OnUniverseSceneLoaded(OWScene oldScene, OWScene newScene)
 	{
-		if (!QSBCore.IsInMultiplayer)
-		{
-			return;
-		}
-
 		if (PlayerTransformSync.LocalInstance == null)
 		{
 			DebugLog.ToConsole($"Error - Tried to run OnUniverseSceneLoaded when PlayerTransformSync.LocalInstance was null!", OWML.Common.MessageType.Error);

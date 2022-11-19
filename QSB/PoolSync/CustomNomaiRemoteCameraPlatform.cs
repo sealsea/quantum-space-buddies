@@ -160,9 +160,7 @@ internal class CustomNomaiRemoteCameraPlatform : NomaiShared
 		if (_platformActive)
 		{
 			var localInBounds = _connectionBounds.PointInside(_playerCamera.transform.position);
-			_anyoneStillOnPlatform = QSBCore.IsInMultiplayer
-				? QSBPlayerManager.PlayerList.Any(x => _connectionBounds.PointInside(x.Camera.transform.position))
-				: localInBounds;
+			_anyoneStillOnPlatform = QSBPlayerManager.PlayerList.Any(x => _connectionBounds.PointInside(x.Camera.transform.position));
 			if (!localInBounds && _wasLocalInBounds)
 			{
 				OnLeaveBounds();

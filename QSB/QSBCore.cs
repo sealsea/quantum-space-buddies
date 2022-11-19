@@ -49,7 +49,6 @@ public class QSBCore : ModBehaviour
 	public static AssetBundle ConversationAssetBundle { get; private set; }
 	public static AssetBundle DebugAssetBundle { get; private set; }
 	public static bool IsHost => NetworkServer.active;
-	public static bool IsInMultiplayer;
 	public static string QSBVersion => Helper.Manifest.Version;
 	public static string GameVersion =>
 		// ignore the last patch numbers like the title screen does
@@ -59,7 +58,7 @@ public class QSBCore : ModBehaviour
 	public static GameVendor GameVendor { get; private set; } = GameVendor.None;
 	public static bool IsStandalone => GameVendor is GameVendor.Epic or GameVendor.Steam;
 	public static IProfileManager ProfileManager => IsStandalone
-		? QSBStandaloneProfileManager.SharedInstance
+		? StandaloneProfileManager.SharedInstance
 		: QSBMSStoreProfileManager.SharedInstance;
 	public static IMenuAPI MenuApi { get; private set; }
 	public static DebugSettings DebugSettings { get; private set; } = new();

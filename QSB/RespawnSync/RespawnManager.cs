@@ -56,11 +56,6 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 
 	private void Init(OWScene newScene, bool inUniverse)
 	{
-		if (!QSBCore.IsInMultiplayer)
-		{
-			return;
-		}
-
 		if (PlayerTransformSync.LocalInstance == null)
 		{
 			DebugLog.ToConsole($"Error - Tried to init when PlayerTransformSync.LocalInstance was null!", OWML.Common.MessageType.Error);

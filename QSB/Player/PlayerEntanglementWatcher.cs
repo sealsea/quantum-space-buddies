@@ -13,11 +13,6 @@ internal class PlayerEntanglementWatcher : MonoBehaviour, IAddComponentOnStart
 
 	private void Update()
 	{
-		if (!QSBCore.IsInMultiplayer)
-		{
-			return;
-		}
-
 		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return;

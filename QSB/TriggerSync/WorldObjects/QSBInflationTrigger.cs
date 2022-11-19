@@ -57,7 +57,7 @@ public class QSBInflationTrigger : QSBTrigger<CosmicInflationController>
 		// wait 1 frame for player to be removed
 		Delay.RunNextFrame(() =>
 		{
-			if (QSBCore.IsInMultiplayer && Occupants.Count == QSBPlayerManager.PlayerList.Count)
+			if (Occupants.Count == QSBPlayerManager.PlayerList.Count)
 			{
 				StartCollapse();
 			}

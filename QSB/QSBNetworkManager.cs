@@ -170,16 +170,16 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			{
 				if (!QSBCore.IsStandalone)
 				{
-					PlayerName = QSBMSStoreProfileManager.SharedInstance.userDisplayName;
+					PlayerName = QSBMSStoreProfileManager.userDisplayName;
 				}
 				else
 				{
-					var currentProfile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
+					var currentProfile = StandaloneProfileManager.SharedInstance.currentProfile;
 
 					if (currentProfile == null)
 					{
 						// probably havent created a profile yet
-						Delay.RunWhen(() => QSBStandaloneProfileManager.SharedInstance.currentProfile != null, () => InitPlayerName());
+						Delay.RunWhen(() => StandaloneProfileManager.SharedInstance.currentProfile != null, () => InitPlayerName());
 						return;
 					}
 
@@ -249,7 +249,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		QSBSceneManager.OnPostSceneLoad += (_, loadScene) =>
 		{
-			if (QSBCore.IsInMultiplayer && loadScene == OWScene.TitleScreen)
+			if (loadScene == OWScene.TitleScreen)
 			{
 				StopHost();
 			}
